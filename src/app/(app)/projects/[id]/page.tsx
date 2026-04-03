@@ -6,6 +6,7 @@ import { useHydration } from "@/hooks/use-hydration";
 import { ProgressPipeline } from "@/components/project/progress-pipeline";
 import { ProjectFilters, FilterState } from "@/components/project/project-filters";
 import { VideoGrid } from "@/components/project/video-grid";
+import { VideoPlayerModal } from "@/components/project/video-player-modal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -29,16 +30,12 @@ export default function ProjectDetailPage() {
   const hydrated = useHydration();
   const getProject = useProjectStore((s) => s.getProject);
   const updateProject = useProjectStore((s) => s.updateProject);
-  const [filters, setFilters] = useState<FilterState>({
-    videoId: null,
-    hookIndex: null,
-    ctaIndex: null,
-    subtitleStyleId: null,
-  });
+  const [filters, setFilters] = useState<FilterState>({ videoId: null, hookIndex: null, ctaIndex: null, subtitleStyleId: null });
+  const [previewVideo, setPreviewVideo] = useState<GeneratedVideo | null>(null);
 
   const project = hydrated ? getProject(params.id as string) : undefined;
 
-  // Generate the video combinations if they don't exist
+  // Generate video combinations if they don't exist
   useEffect(() => {
     if (!project || project.generatedVideos.length > 0) return;
     if (project.status === "draft" || project.status === "pending") return;
@@ -61,6 +58,8 @@ export default function ProjectDetailPage() {
               subtitleStyleId: sid,
               status: isCompleted ? "completed" : project.status === "generating" ? "processing" : "pending",
               label: `${video.name} + Hook ${hi + 1} + ${project.ctas[ci]} + ${styleName}`,
+              thumbnail: video.thumbnail,
+              outputUrl: video.url,
             });
             videoIndex++;
           }
@@ -82,17 +81,13 @@ export default function ProjectDetailPage() {
     });
   }, [project, filters]);
 
-  if (!hydrated) {
-    return <div className="glass-card h-96 animate-pulse" />;
-  }
+  if (!hydrated) return <div className="glass-card h-96 animate-pulse" />;
 
   if (!project) {
     return (
       <div className="glass-card p-12 text-center">
         <p className="text-muted-foreground">Project not found.</p>
-        <Button render={<Link href="/dashboard" />} variant="outline" className="mt-4 bg-white/5 border-white/10">
-          Back to Dashboard
-        </Button>
+        <Button render={<Link href="/dashboard" />} variant="outline" className="mt-4">Back to Dashboard</Button>
       </div>
     );
   }
@@ -108,63 +103,40 @@ export default function ProjectDetailPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="flex items-start gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.push("/dashboard")}
-            className="mt-0.5 text-muted-foreground hover:text-white"
-          >
+          <Button variant="ghost" size="icon" onClick={() => router.push("/dashboard")} className="mt-0.5 text-muted-foreground hover:text-white cursor-pointer">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-white">{project.name}</h1>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-bold text-white">{project.name}</h1>
               <Badge className={status.className} variant="outline">{status.label}</Badge>
             </div>
-            {project.description && (
-              <p className="text-sm text-muted-foreground mt-1">{project.description}</p>
-            )}
           </div>
         </div>
-
         <div className="flex items-center gap-2 shrink-0">
           {(project.status === "draft" || project.status === "pending") && (
-            <Button
-              className="gradient-bg text-white border-0 hover:opacity-90 gap-2"
-              onClick={() => {
-                updateProject(project.id, { status: "generating" });
-              }}
-            >
-              <Sparkles className="h-4 w-4" />
-              Start Generation
+            <Button className="gradient-bg text-white border-0 hover:opacity-90 gap-2 cursor-pointer" onClick={() => updateProject(project.id, { status: "generating" })}>
+              <Sparkles className="h-4 w-4" /> Start Generation
             </Button>
           )}
-          <Button
-            variant="outline"
-            className="bg-white/5 border-white/10 hover:bg-white/10 gap-2"
-            render={<Link href={`/projects/${project.id}/preview`} />}
-          >
-            <Play className="h-4 w-4" />
-            Preview
-          </Button>
         </div>
       </div>
 
-      {/* Stats Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
         {stats.map((stat) => (
-          <Card key={stat.label} className="bg-white/[0.03] border-white/[0.06] p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-brand-purple/10 flex items-center justify-center">
-                <stat.icon className="h-4 w-4 text-brand-purple" />
+          <Card key={stat.label} className="bg-card border-border p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-brand-purple/10 flex items-center justify-center">
+                <stat.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-brand-purple" />
               </div>
               <div>
-                <p className="text-lg font-semibold text-white">{stat.value}</p>
-                <p className="text-xs text-muted-foreground">{stat.label}</p>
+                <p className="text-base sm:text-lg font-semibold text-white">{stat.value}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</p>
               </div>
             </div>
           </Card>
@@ -173,78 +145,57 @@ export default function ProjectDetailPage() {
 
       {/* Pipeline */}
       {(project.status === "pending" || project.status === "generating" || project.status === "completed" || project.status === "failed") && (
-        <ProgressPipeline
-          completedVideos={project.completedVideos}
-          totalVideos={project.totalVideos}
-          status={project.status}
-        />
+        <ProgressPipeline completedVideos={project.completedVideos} totalVideos={project.totalVideos} status={project.status} />
       )}
 
-      {/* Conditional: Filters + Grid or Empty State */}
+      {/* Videos */}
       {hasCompletedVideos ? (
         <>
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <ProjectFilters
-              project={project}
-              filters={filters}
-              onFilterChange={setFilters}
-            />
-            <p className="text-xs text-muted-foreground">
-              Showing {filteredVideos.length} of {project.generatedVideos.length} videos
-            </p>
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <ProjectFilters project={project} filters={filters} onFilterChange={setFilters} />
+            <p className="text-xs text-muted-foreground">Showing {filteredVideos.length} of {project.generatedVideos.length}</p>
           </div>
-
-          <VideoGrid
-            videos={filteredVideos}
-            onPreview={(video) => router.push(`/projects/${project.id}/preview?video=${video.id}`)}
-          />
+          <VideoGrid videos={filteredVideos} sourceVideos={project.videos} onPreview={(v) => setPreviewVideo(v)} />
         </>
       ) : (
-        /* Empty states when no completed videos */
         <>
           {(project.status === "draft" || project.status === "pending") && (
-            <Card className="bg-white/[0.03] border-white/[0.06] p-12 text-center">
+            <Card className="bg-card border-border p-8 sm:p-12 text-center">
               <div className="flex flex-col items-center gap-4 max-w-md mx-auto">
                 <div className="w-14 h-14 rounded-2xl gradient-bg flex items-center justify-center">
                   <Sparkles className="h-7 w-7 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">
-                    {project.status === "pending" ? "Queued for Generation" : "Ready to Generate"}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {project.status === "pending"
-                      ? `Your project is queued for generation with ${project.totalVideos} video combinations.`
-                      : `This project has ${project.totalVideos} video combinations configured. Start generation to create all variations.`
-                    }
-                  </p>
+                  <h3 className="text-lg font-semibold text-white">{project.status === "pending" ? "Queued" : "Ready to Generate"}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{project.totalVideos} video combinations configured.</p>
                 </div>
-                <Button
-                  className="gradient-bg text-white border-0 hover:opacity-90 gap-2 mt-2"
-                  onClick={() => updateProject(project.id, { status: "generating" })}
-                >
-                  <Sparkles className="h-4 w-4" />
-                  Start Generation
+                <Button className="gradient-bg text-white border-0 hover:opacity-90 gap-2 cursor-pointer" onClick={() => updateProject(project.id, { status: "generating" })}>
+                  <Sparkles className="h-4 w-4" /> Start Generation
                 </Button>
               </div>
             </Card>
           )}
-
           {project.status === "generating" && (
-            <Card className="bg-white/[0.03] border-white/[0.06] p-12 text-center">
+            <Card className="bg-card border-border p-8 sm:p-12 text-center">
               <div className="flex flex-col items-center gap-4 max-w-md mx-auto">
                 <Loader2 className="h-10 w-10 text-brand-cyan animate-spin" />
                 <div>
                   <h3 className="text-lg font-semibold text-white">Processing Videos</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Generation has started. Completed videos will appear here shortly.
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">Completed videos will appear here shortly.</p>
                 </div>
               </div>
             </Card>
           )}
         </>
       )}
+
+      {/* Video Player Modal */}
+      <VideoPlayerModal
+        video={previewVideo}
+        project={project}
+        open={!!previewVideo}
+        onClose={() => setPreviewVideo(null)}
+      />
     </div>
   );
 }

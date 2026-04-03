@@ -1,14 +1,16 @@
 "use client";
 
-import { GeneratedVideo } from "@/types";
+import { GeneratedVideo, VideoSource } from "@/types";
 import { VideoCard } from "./video-card";
 import { Film } from "lucide-react";
 
 export function VideoGrid({
   videos,
+  sourceVideos,
   onPreview,
 }: {
   videos: GeneratedVideo[];
+  sourceVideos?: VideoSource[];
   onPreview?: (video: GeneratedVideo) => void;
 }) {
   if (videos.length === 0) {
@@ -22,9 +24,12 @@ export function VideoGrid({
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-      {videos.map((video, index) => (
-        <VideoCard key={video.id} video={video} index={index} onPreview={onPreview} />
-      ))}
+      {videos.map((video, index) => {
+        const source = sourceVideos?.find((s) => s.id === video.videoSourceId);
+        return (
+          <VideoCard key={video.id} video={video} sourceVideo={source} index={index} onPreview={onPreview} />
+        );
+      })}
     </div>
   );
 }

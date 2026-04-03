@@ -10,10 +10,11 @@ import { Separator } from "@/components/ui/separator";
 import { Video, Type, MousePointerClick, Subtitles, Sparkles, Coins, Play, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { PhonePreview } from "@/components/common/phone-preview";
 import { useRouter } from "next/navigation";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 
 const ctaPreviewStyle: Record<string, (c: string) => React.CSSProperties> = {
   solid: () => ({ background: "#3B82F6", borderRadius: 6, color: "#fff" }),
@@ -37,12 +38,14 @@ interface Combo {
 }
 
 export function StepReview() {
-  const { wizardState, createProject } = useProjectStore();
+  const { wizardState, createProject, updateProject } = useProjectStore();
   const { balance, deduct } = useCreditsStore();
   const router = useRouter();
   const [creating, setCreating] = useState(false);
   const [selectedCombo, setSelectedCombo] = useState(0);
   const [errors, setErrors] = useState<string[]>([]);
+  const [genProgress, setGenProgress] = useState(0);
+  const [genStatus, setGenStatus] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const projectName = wizardState.projectName || "";
@@ -97,10 +100,44 @@ export function StepReview() {
   const handleCreate = async () => {
     if (!validate()) { errors.forEach((e) => toast.error(e, { closeButton: true })); return; }
     setCreating(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    createProject(projectName.trim());
+    setGenProgress(0);
+    setGenStatus("Initializing...");
+
+    const steps = [
+      { at: 5, status: "Preparing video assets..." },
+      { at: 15, status: "Applying hooks & styles..." },
+      { at: 30, status: "Rendering CTAs..." },
+      { at: 50, status: "Adding subtitles..." },
+      { at: 65, status: "Compositing overlays..." },
+      { at: 80, status: "Encoding videos..." },
+      { at: 92, status: "Finalizing..." },
+      { at: 100, status: "Complete!" },
+    ];
+
+    // 20 seconds total, update every 250ms
+    const totalMs = 20000;
+    const interval = 250;
+    let elapsed = 0;
+
+    await new Promise<void>((resolve) => {
+      const timer = setInterval(() => {
+        elapsed += interval;
+        const pct = Math.min(Math.round((elapsed / totalMs) * 100), 100);
+        setGenProgress(pct);
+        const step = [...steps].reverse().find((s) => pct >= s.at);
+        if (step) setGenStatus(step.status);
+        if (elapsed >= totalMs) {
+          clearInterval(timer);
+          resolve();
+        }
+      }, interval);
+    });
+
+    const projectId = createProject(projectName.trim());
     deduct(creditCost);
-    toast.success("Project created!", { closeButton: true });
+    // Mark project as completed
+    updateProject(projectId, { status: "completed", completedVideos: totalVideos });
+    toast.success(`Project created! ${totalVideos} videos generated.`, { closeButton: true });
     router.push("/dashboard");
   };
 
@@ -161,9 +198,21 @@ export function StepReview() {
               <span className="font-semibold text-white text-sm">{creditCost}</span>
             </div>
             {creditCost > balance && <p className="text-[11px] text-red-400 mb-2">Insufficient credits ({balance} available).</p>}
-            <Button onClick={handleCreate} disabled={creating} className="w-full gradient-bg text-white border-0 hover:opacity-90 gap-2 h-10 text-sm">
-              {creating ? "Creating..." : <><Sparkles className="h-4 w-4" />Create Project</>}
-            </Button>
+
+            {creating ? (
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">{genStatus}</span>
+                  <span className="font-mono text-brand-purple font-semibold">{genProgress}%</span>
+                </div>
+                <Progress value={genProgress} className="h-2.5" />
+                <p className="text-[10px] text-muted-foreground text-center">Generating {totalVideos} videos...</p>
+              </div>
+            ) : (
+              <Button onClick={handleCreate} className="w-full gradient-bg text-white border-0 hover:opacity-90 gap-2 h-10 text-sm cursor-pointer">
+                <Sparkles className="h-4 w-4" />Create Project
+              </Button>
+            )}
           </motion.div>
         </div>
 
