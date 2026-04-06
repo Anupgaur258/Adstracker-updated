@@ -47,7 +47,7 @@ export function CreditsPopup({ children }: { children: React.ReactNode }) {
               </div>
               <div>
                 <p className="text-sm font-semibold text-white capitalize">{hydrated ? user?.plan || "Free" : "..."} Plan</p>
-                <p className="text-[11px] text-muted-foreground">Yearly billing</p>
+                <p className="text-xs text-muted-foreground">Yearly billing</p>
               </div>
             </div>
             <Badge className="gradient-bg text-white border-0 text-xs">Active</Badge>
@@ -64,7 +64,7 @@ export function CreditsPopup({ children }: { children: React.ReactNode }) {
               <span className="text-xs text-muted-foreground">Remaining</span>
               <span className="text-sm font-bold gradient-text">{hydrated ? balance : "..."} credits</span>
             </div>
-            <p className="text-[11px] text-muted-foreground">Resets on the 1st of each month</p>
+            <p className="text-xs text-muted-foreground">Resets on the 1st of each month</p>
           </div>
 
           <Separator className="bg-white/[0.06]" />
@@ -78,7 +78,7 @@ export function CreditsPopup({ children }: { children: React.ReactNode }) {
               </div>
               <div className="flex-1">
                 <p className="text-sm text-white font-mono">&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4242</p>
-                <p className="text-[10px] text-muted-foreground">Visa &middot; Expires 12/27</p>
+                <p className="text-xs text-muted-foreground">Visa &middot; Expires 12/27</p>
               </div>
               <Check className="h-4 w-4 text-brand-teal" />
             </div>
@@ -94,7 +94,7 @@ export function CreditsPopup({ children }: { children: React.ReactNode }) {
                 <div key={i} className="flex items-center justify-between py-2.5 border-b border-white/[0.04] last:border-0">
                   <div>
                     <p className="text-sm text-white">{item.project}</p>
-                    <p className="text-[10px] text-muted-foreground">{item.date}</p>
+                    <p className="text-xs text-muted-foreground">{item.date}</p>
                   </div>
                   <span className={`text-sm font-mono ${item.type === "received" ? "text-brand-teal" : "text-muted-foreground"}`}>
                     {item.type === "spent" ? `-${item.credits}` : `+${item.credits}`}

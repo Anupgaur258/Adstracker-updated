@@ -32,6 +32,17 @@ export interface Project {
   ctaBoxColors: string[];
   ctaOutlineColors: string[];
   ctaOutlineWidths: number[];
+  hookBolds: boolean[];
+  ctaBolds: boolean[];
+  hookBodies: string[];
+  hookBodyTemplates: string[];
+  hookBodyColors: string[];
+  hookBodyFonts: string[];
+  hookBodyFontSizes: number[];
+  hookBodyBolds: boolean[];
+  hookBodyBoxColors: string[];
+  hookBodyOutlineColors: string[];
+  hookBodyOutlineWidths: number[];
   generatedVideos: GeneratedVideo[];
   totalVideos: number;
   completedVideos: number;
@@ -71,7 +82,13 @@ export interface GeneratedVideo {
 }
 
 export interface ProjectStyling {
+  hookStart: number;
   hookDuration: number;
+  hookBodyStart: number;
+  hookBodyDuration: number;
+  hookBodyXPosition: "left" | "center" | "right";
+  hookBodyYPosition: number;
+  ctaStart: number;
   ctaDuration: number;
   fontSize: number;
   fontFamily: string;
@@ -166,6 +183,17 @@ export interface WizardState {
   ctaBoxColors: string[];
   ctaOutlineColors: string[];
   ctaOutlineWidths: number[];
+  hookBolds: boolean[];
+  ctaBolds: boolean[];
+  hookBodies: string[];
+  hookBodyTemplates: string[];
+  hookBodyColors: string[];
+  hookBodyFonts: string[];
+  hookBodyFontSizes: number[];
+  hookBodyBolds: boolean[];
+  hookBodyBoxColors: string[];
+  hookBodyOutlineColors: string[];
+  hookBodyOutlineWidths: number[];
 }
 
 export type GenerationStatus = "idle" | "generating" | "completed" | "failed";

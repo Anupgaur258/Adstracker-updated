@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { Camera, Eye, EyeOff, AlertCircle } from "lucide-react";
 
 interface FieldErrors {
@@ -59,12 +59,12 @@ export default function SettingsPage() {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select a valid image file", { closeButton: true });
+      toast.error("Please select a valid image file");
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size must be less than 5MB", { closeButton: true });
+      toast.error("Image size must be less than 5MB");
       return;
     }
 
@@ -75,9 +75,9 @@ export default function SettingsPage() {
       try {
         await saveProfileImage(dataUrl);
         updateProfile({ avatar: dataUrl });
-        toast.success("Profile image updated", { closeButton: true });
+        toast.success("Profile image updated");
       } catch {
-        toast.error("Failed to save profile image", { closeButton: true });
+        toast.error("Failed to save profile image");
       }
     };
     reader.readAsDataURL(file);
@@ -106,7 +106,7 @@ export default function SettingsPage() {
     setFieldErrors((prev) => ({ ...prev, ...errors, ...(valid ? { name: undefined, email: undefined } : {}) }));
 
     if (!valid) {
-      toast.error("Please fix the errors below", { closeButton: true });
+      toast.error("Please fix the errors below");
     }
     return valid;
   };
@@ -114,7 +114,7 @@ export default function SettingsPage() {
   const handleSaveProfile = () => {
     if (!validateProfile()) return;
     updateProfile({ name: name.trim(), email: email.trim() });
-    toast.success("Profile updated successfully", { closeButton: true });
+    toast.success("Profile updated successfully");
   };
 
   const validatePassword = (): boolean => {
@@ -152,7 +152,7 @@ export default function SettingsPage() {
     }));
 
     if (!valid) {
-      toast.error("Please fix the password errors below", { closeButton: true });
+      toast.error("Please fix the password errors below");
     }
     return valid;
   };
@@ -162,13 +162,13 @@ export default function SettingsPage() {
 
     const result = changePassword(currentPassword, newPassword);
     if (result.success) {
-      toast.success("Password changed successfully", { closeButton: true });
+      toast.success("Password changed successfully");
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
       setFieldErrors({});
     } else {
-      toast.error(result.error || "Failed to change password", { closeButton: true });
+      toast.error(result.error || "Failed to change password");
     }
   };
 

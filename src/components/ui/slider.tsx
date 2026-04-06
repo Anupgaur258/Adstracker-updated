@@ -5,6 +5,15 @@ import { Slider as SliderPrimitive } from "@base-ui/react/slider"
 
 import { cn } from "@/lib/utils"
 
+// Suppress harmless "script tag" warning from base-ui Slider in dev mode
+if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
+  const origError = console.error;
+  console.error = (...args: unknown[]) => {
+    if (typeof args[0] === "string" && args[0].includes("Encountered a script tag")) return;
+    origError(...args);
+  };
+}
+
 function Slider({
   className,
   defaultValue,

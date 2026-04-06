@@ -11,7 +11,7 @@ import { StepReview } from "./step-review";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { LIMITS } from "@/lib/constants";
 
 const TOTAL_STEPS = 5;
@@ -41,6 +41,13 @@ export function WizardShell() {
         if (filled < 1) errors.push("Please write at least 1 hook (min 1, max 5)");
         const hasTemplate = wizardState.hookTemplates.some((t) => t);
         if (!hasTemplate) errors.push("Please select a template for your hooks");
+        const { hookStart, hookDuration, hookBodyStart, hookBodyDuration } = wizardState.styling;
+        if (!hookDuration || hookDuration <= hookStart) errors.push("Please set hook start and end duration");
+        const hasBody = wizardState.hookBodies?.some((b) => b.trim().length > 0);
+        if (hasBody) {
+          if (!hookBodyDuration || hookBodyDuration <= hookBodyStart) errors.push("Please set hook body start and end duration");
+          if (hookBodyStart < hookDuration) errors.push("Hook body start must be after hook end duration");
+        }
         break;
       }
       case 2: {
@@ -64,10 +71,7 @@ export function WizardShell() {
   const handleNext = () => {
     const errors = getValidationErrors();
     if (errors.length > 0) {
-      errors.forEach((err) => {
-        toast.error(err, { closeButton: true });
-      });
-      // Tell step components to show inline validation
+      toast.error(errors[0]);
       window.dispatchEvent(new CustomEvent("wizard-validate"));
       return;
     }
@@ -94,23 +98,26 @@ export function WizardShell() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <StepIndicator currentStep={currentStep} />
+    <div className="flex flex-col h-[calc(100vh-6rem)] sm:h-[calc(100vh-7rem)]  w-full">
+      {/* Scrollable step content */}
+      <div className="flex-1 overflow-y-auto scrollbar-hide space-y-4 sm:space-y-6 pb-4 w-full">
+        <StepIndicator currentStep={currentStep} />
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStep}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.25 }}
-        >
-          {renderStep()}
-        </motion.div>
-      </AnimatePresence>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.25 }}
+          >
+            {renderStep()}
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
-      {/* Bottom navigation — sticky at bottom */}
-      <div className="sticky bottom-0 z-30 bg-background/95 backdrop-blur-md border-t border-border py-3 sm:py-4 -mx-4 px-4 md:-mx-6 md:px-6">
+      {/* Bottom navigation — always visible, no scroll needed */}
+      <div className="shrink-0 z-30 bg-background/95 backdrop-blur-md border-t border-border py-3 sm:py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
         <div className="flex items-center justify-between">
           <Button
             variant="outline"

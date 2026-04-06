@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Toaster } from "sonner";
+import { ToastProvider } from "@/components/common/toast-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/common/theme-provider";
 import "./globals.css";
@@ -56,19 +56,7 @@ export default function RootLayout({
         <ThemeProvider>
         <TooltipProvider>
           {children}
-          <Toaster
-            position="top-right"
-            closeButton
-            theme="dark"
-            toastOptions={{
-              style: {
-                background: "rgba(20, 24, 50, 0.95)",
-                border: "1px solid rgba(148, 163, 184, 0.15)",
-                color: "#F8FAFC",
-                backdropFilter: "blur(8px)",
-              },
-            }}
-          />
+          <ToastProvider />
         </TooltipProvider>
         </ThemeProvider>
       </body>

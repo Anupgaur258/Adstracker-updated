@@ -130,6 +130,13 @@ html.light {
   }
   html {
     @apply font-sans;
+    font-size: 15px;
+  }
+  @media (min-width: 640px) {
+    html { font-size: 16px; }
+  }
+  @media (min-width: 1024px) {
+    html { font-size: 17px; }
   }
 
   /* ── Light-mode: FULL override ── */
@@ -330,6 +337,10 @@ html.light {
     display: none;
   }
 }
+
+/* Hook title fade out, then body fade in */
+@keyframes hookTitleFadeOut { 0% { opacity: 1 } 100% { opacity: 0; height: 0; overflow: hidden } }
+@keyframes hookBodyFadeIn { 0% { opacity: 0; transform: translateY(6px) } 100% { opacity: 1; transform: translateY(0) } }
 
 /* Hook/CTA overlay animations */
 @keyframes anim-fade { 0% { opacity: 0 } 100% { opacity: 1 } }

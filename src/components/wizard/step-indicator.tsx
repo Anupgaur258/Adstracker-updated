@@ -25,7 +25,7 @@ export function StepIndicator({ currentStep }: { currentStep: number }) {
               <div className="flex flex-col items-center gap-1">
                 <div
                   className={cn(
-                    "w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-semibold transition-all duration-300",
+                    "w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-300",
                     isCompleted && "gradient-bg text-white",
                     isCurrent && "ring-2 ring-brand-purple bg-brand-purple/20 text-brand-purple",
                     !isCompleted && !isCurrent && "bg-muted text-muted-foreground"
@@ -41,7 +41,7 @@ export function StepIndicator({ currentStep }: { currentStep: number }) {
                 </div>
                 <span
                   className={cn(
-                    "text-[10px] sm:text-xs whitespace-nowrap",
+                    "text-xs sm:text-sm whitespace-nowrap",
                     isCurrent ? "text-white font-medium" : "text-muted-foreground"
                   )}
                 >

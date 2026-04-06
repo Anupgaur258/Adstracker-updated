@@ -8,7 +8,7 @@ import { Check, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { PreviewPanel } from "./preview-panel";
 
 const animClass: Record<string, string> = {
@@ -30,7 +30,7 @@ export function StepSubtitles() {
       updateWizardState({ selectedSubtitleStyles: selected.filter((id) => id !== styleId) });
     } else {
       if (selected.length >= LIMITS.maxSubtitleStyles) {
-        toast.error(`Maximum ${LIMITS.maxSubtitleStyles} subtitle styles allowed`, { closeButton: true });
+        toast.error(`Maximum ${LIMITS.maxSubtitleStyles} subtitle styles allowed`);
         return;
       }
       updateWizardState({ selectedSubtitleStyles: [...selected, styleId] });
@@ -38,7 +38,7 @@ export function StepSubtitles() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <div>
         <h2 className="text-lg sm:text-xl font-bold text-white">Choose Subtitle Styles</h2>
         <p className="text-sm text-muted-foreground mt-1">
@@ -47,10 +47,10 @@ export function StepSubtitles() {
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row lg:items-stretch">
+      <div className="flex flex-col lg:flex-row lg:items-stretch lg:gap-5 w-full">
         {/* LEFT — Subtitle cards */}
-        <div className="flex-1 min-w-0 lg:pr-6">
-          <Label className="text-sm font-semibold text-white mb-3 block">Choose Style <span className="text-red-400">*</span></Label>
+        <div className="w-full lg:w-[38%] lg:flex-none min-w-0 px-1">
+          <Label className="text-sm font-bold text-white mb-3 block">Choose Style <span className="text-red-400">*</span></Label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {subtitleStyles.map((style, index) => {
               const isSelected = selected.includes(style.id);
@@ -69,9 +69,9 @@ export function StepSubtitles() {
                   <div className="p-2.5">
                     <div className="flex items-center justify-between mb-1">
                       <h3 className="font-semibold text-white text-sm">{style.name}</h3>
-                      <Badge variant="outline" className="text-[10px] px-1.5 py-0">{style.font || style.fontFamily}</Badge>
+                      <Badge variant="outline" className="text-xs px-1.5 py-0">{style.font || style.fontFamily}</Badge>
                     </div>
-                    {style.animationLabel && <Badge variant="outline" className="bg-brand-purple/10 border-brand-purple/20 text-brand-purple text-[10px] px-1.5 py-0">{style.animationLabel}</Badge>}
+                    {style.animationLabel && <Badge variant="outline" className="bg-brand-purple/10 border-brand-purple/20 text-brand-purple text-xs px-1.5 py-0">{style.animationLabel}</Badge>}
                   </div>
                   {isSelected && (<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full gradient-bg flex items-center justify-center"><Check className="h-3.5 w-3.5 text-white" /></motion.div>)}
                 </motion.button>
@@ -87,11 +87,11 @@ export function StepSubtitles() {
         <div className="lg:hidden my-4 h-px bg-border" />
 
         {/* RIGHT — Preview */}
-        <div className="flex-1 min-w-0 lg:pl-6 mt-4 lg:mt-0 space-y-4 lg:sticky lg:top-0 h-fit">
+        <div className="w-full lg:flex-1 min-w-0 mt-4 lg:mt-0 space-y-4 lg:sticky lg:top-0 h-fit">
           <PreviewPanel activeLayer="subtitle">
             {selected.length > 0 && (
               <div className="space-y-2">
-                <h4 className="text-[10px] font-semibold text-muted-foreground uppercase">Selected Styles</h4>
+                <h4 className="text-xs font-semibold text-muted-foreground uppercase">Selected Styles</h4>
                 {selected.map((id) => {
                   const style = subtitleStyles.find((s) => s.id === id);
                   if (!style) return null;
@@ -99,7 +99,7 @@ export function StepSubtitles() {
                     <div key={id} className="flex items-center justify-between p-2 rounded-lg border border-border">
                       <span className="text-xs text-white font-medium">{style.name}</span>
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">{style.font || style.fontFamily}</Badge>
+                        <Badge variant="outline" className="text-xs px-1.5 py-0">{style.font || style.fontFamily}</Badge>
                         <button onClick={() => toggleStyle(id)} className="w-4 h-4 rounded-full flex items-center justify-center hover:bg-red-500/20 text-muted-foreground hover:text-red-400 transition-colors">
                           <X className="h-3 w-3" />
                         </button>

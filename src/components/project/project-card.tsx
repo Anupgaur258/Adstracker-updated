@@ -19,7 +19,7 @@ import { Video, Clock, Trash2, Film, Check, AlertTriangle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useProjectStore } from "@/stores/project-store";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 const statusConfig = {
   draft: { label: "Draft", className: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20" },
@@ -125,7 +125,7 @@ export function ProjectCard({ project, index = 0 }: { project: Project; index?: 
               <AlertDialogCancel className="bg-white/5 border-white/10 hover:bg-white/10">Cancel</AlertDialogCancel>
               <AlertDialogAction
                 className="bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/20"
-                onClick={() => { deleteProject(project.id); toast.success("Project deleted", { closeButton: true }); }}
+                onClick={() => { deleteProject(project.id); toast.success("Project deleted"); }}
               >
                 Delete
               </AlertDialogAction>

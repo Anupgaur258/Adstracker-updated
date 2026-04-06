@@ -58,8 +58,14 @@ function getIDB(): StateStorage {
 }
 
 const defaultStyling: ProjectStyling = {
-  hookDuration: 3,
-  ctaDuration: 4,
+  hookStart: 0,
+  hookDuration: 0,
+  hookBodyStart: 0,
+  hookBodyDuration: 0,
+  hookBodyXPosition: "center",
+  hookBodyYPosition: 30,
+  ctaStart: 0,
+  ctaDuration: 0,
   fontSize: 26,
   fontFamily: "Inter",
   textColor: "#FFFFFF",
@@ -100,6 +106,17 @@ const defaultWizardState: WizardState = {
   ctaBoxColors: ["transparent"],
   ctaOutlineColors: ["transparent"],
   ctaOutlineWidths: [0],
+  hookBolds: [false],
+  ctaBolds: [false],
+  hookBodies: [""],
+  hookBodyTemplates: ["ht1"],
+  hookBodyColors: ["#FFFFFF"],
+  hookBodyFonts: ["Inter"],
+  hookBodyFontSizes: [22],
+  hookBodyBolds: [false],
+  hookBodyBoxColors: ["transparent"],
+  hookBodyOutlineColors: ["transparent"],
+  hookBodyOutlineWidths: [0],
 };
 
 interface ProjectState {
@@ -184,6 +201,17 @@ export const useProjectStore = create<ProjectState>()(
           ctaBoxColors: w.ctaBoxColors.slice(0, filledCtas.length),
           ctaOutlineColors: w.ctaOutlineColors.slice(0, filledCtas.length),
           ctaOutlineWidths: w.ctaOutlineWidths.slice(0, filledCtas.length),
+          hookBolds: w.hookBolds.slice(0, filledHooks.length),
+          ctaBolds: w.ctaBolds.slice(0, filledCtas.length),
+          hookBodies: w.hookBodies.slice(0, filledHooks.length),
+          hookBodyTemplates: w.hookBodyTemplates.slice(0, filledHooks.length),
+          hookBodyColors: w.hookBodyColors.slice(0, filledHooks.length),
+          hookBodyFonts: w.hookBodyFonts.slice(0, filledHooks.length),
+          hookBodyFontSizes: w.hookBodyFontSizes.slice(0, filledHooks.length),
+          hookBodyBolds: w.hookBodyBolds.slice(0, filledHooks.length),
+          hookBodyBoxColors: w.hookBodyBoxColors.slice(0, filledHooks.length),
+          hookBodyOutlineColors: w.hookBodyOutlineColors.slice(0, filledHooks.length),
+          hookBodyOutlineWidths: w.hookBodyOutlineWidths.slice(0, filledHooks.length),
           generatedVideos: [],
           totalVideos,
           completedVideos: 0,
@@ -210,10 +238,10 @@ export const useProjectStore = create<ProjectState>()(
     }),
     {
       name: "adstacker-projects",
-      version: 9,
+      version: 15,
       storage: createJSONStorage(() => getIDB()),
       migrate: (persisted: unknown, version: number) => {
-        if (version < 9) {
+        if (version < 15) {
           return {
             projects: demoProjects,
             wizardState: defaultWizardState,

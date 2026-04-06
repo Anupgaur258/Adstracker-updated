@@ -40,7 +40,7 @@ export default function DashboardPage() {
             {projects.length} project{projects.length !== 1 ? "s" : ""} created
           </p>
         </div>
-        <Button render={<Link href="/projects/new" />} className="gradient-bg text-white border-0 hover:opacity-90 gap-2">
+        <Button render={<Link href="/projects/new?new=1" />} className="gradient-bg text-white border-0 hover:opacity-90 gap-2">
           <Plus className="h-4 w-4" />
           New Project
         </Button>
@@ -59,7 +59,7 @@ export default function DashboardPage() {
           <p className="text-muted-foreground max-w-sm mb-6">
             Create your first project to start generating hundreds of video ad variations.
           </p>
-          <Button render={<Link href="/projects/new" />} className="gradient-bg text-white border-0 hover:opacity-90 gap-2">
+          <Button render={<Link href="/projects/new?new=1" />} className="gradient-bg text-white border-0 hover:opacity-90 gap-2">
             <Plus className="h-4 w-4" />
             Create Your First Project
           </Button>
@@ -73,7 +73,7 @@ export default function DashboardPage() {
             transition={{ duration: 0.3 }}
           >
             <Link
-              href="/projects/new"
+              href="/projects/new?new=1"
               className="glass-card-hover flex flex-col items-center justify-center border-2 border-dashed border-white/10 hover:border-brand-purple/30 group aspect-[9/14]"
             >
               <div className="w-14 h-14 rounded-full gradient-bg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">

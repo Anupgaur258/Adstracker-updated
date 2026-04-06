@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -37,13 +37,13 @@ export function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) {
-      toast.error("Please fill in all fields correctly", { closeButton: true });
+      toast.error("Please fill in all fields correctly");
       return;
     }
     setLoading(true);
     await new Promise((r) => setTimeout(r, 800));
     login(email, password);
-    toast.success("Welcome back!", { closeButton: true });
+    toast.success("Welcome back!");
     router.push("/dashboard");
   };
 

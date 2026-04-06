@@ -11,7 +11,7 @@ import { Video, Type, MousePointerClick, Subtitles, Sparkles, Coins, Play, Alert
 import { PhonePreview } from "@/components/common/phone-preview";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
@@ -79,6 +79,8 @@ export function StepReview() {
   const hookFont = active ? (wizardState.hookFonts[active.hookIdx] || "Inter") : "Inter";
   const hookFontSize = active ? (wizardState.hookFontSizes[active.hookIdx] || 28) : 28;
   const hookBoxColor = active ? (wizardState.hookBoxColors[active.hookIdx] || "transparent") : "transparent";
+  const hookBold = active ? (wizardState.hookBolds?.[active.hookIdx] || false) : false;
+  const hookBodyText = active ? (wizardState.hookBodies?.[active.hookIdx]?.trim() || "") : "";
   const ctaColor = active ? (wizardState.ctaColors[active.ctaIdx] || "#FFF") : "#FFF";
   const ctaFont = active ? (wizardState.ctaFonts[active.ctaIdx] || "Inter") : "Inter";
   const ctaTmpl = active ? ctaTemplates.find((t) => t.id === wizardState.ctaTemplates[active.ctaIdx]) : null;
@@ -98,7 +100,7 @@ export function StepReview() {
   };
 
   const handleCreate = async () => {
-    if (!validate()) { errors.forEach((e) => toast.error(e, { closeButton: true })); return; }
+    if (!validate()) { errors.forEach((e) => toast.error(e)); return; }
     setCreating(true);
     setGenProgress(0);
     setGenStatus("Initializing...");
@@ -137,12 +139,12 @@ export function StepReview() {
     deduct(creditCost);
     // Mark project as completed
     updateProject(projectId, { status: "completed", completedVideos: totalVideos });
-    toast.success(`Project created! ${totalVideos} videos generated.`, { closeButton: true });
+    toast.success(`Project created! ${totalVideos} videos generated.`);
     router.push("/dashboard");
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       <div>
         <h2 className="text-lg sm:text-xl font-bold text-white">Review & Create</h2>
         <p className="text-sm text-muted-foreground mt-1">Review selections, preview combinations, and create.</p>
@@ -154,9 +156,9 @@ export function StepReview() {
         </div>
       )}
 
-      <div className="flex flex-col lg:flex-row lg:items-stretch">
+      <div className="flex flex-col lg:flex-row lg:items-stretch lg:gap-5 w-full">
         {/* LEFT */}
-        <div className="flex-1 min-w-0 space-y-3 lg:pr-4">
+        <div className="w-full lg:w-[38%] lg:flex-none min-w-0 space-y-3">
           <div className={cn("glass-card p-3", !projectName.trim() && errors.length > 0 && "ring-1 ring-red-500/30")}>
             <p className="text-xs text-muted-foreground mb-0.5">Project Name</p>
             <p className="text-white font-semibold text-sm">{projectName || <span className="text-red-400">Not set</span>}</p>
@@ -165,23 +167,23 @@ export function StepReview() {
           <div className="grid grid-cols-2 gap-2.5">
             <div className={cn("glass-card p-2.5", videoCount === 0 && errors.length > 0 && "ring-1 ring-red-500/30")}>
               <div className="flex items-center gap-1.5 mb-1.5"><Video className="h-3.5 w-3.5 text-brand-purple" /><span className="font-semibold text-white text-xs">Videos ({videoCount})</span></div>
-              {wizardState.videos.map((v) => <p key={v.id} className="text-[10px] text-muted-foreground truncate">{v.name}</p>)}
-              {videoCount === 0 && <p className="text-[10px] text-red-400">None</p>}
+              {wizardState.videos.map((v) => <p key={v.id} className="text-xs text-muted-foreground truncate">{v.name}</p>)}
+              {videoCount === 0 && <p className="text-xs text-red-400">None</p>}
             </div>
             <div className={cn("glass-card p-2.5", hookCount === 0 && errors.length > 0 && "ring-1 ring-red-500/30")}>
               <div className="flex items-center gap-1.5 mb-1.5"><Type className="h-3.5 w-3.5 text-brand-blue" /><span className="font-semibold text-white text-xs">Hooks ({hookCount})</span></div>
-              {filledHooks.map((h) => <p key={h.i} className="text-[10px] text-muted-foreground truncate">{h.text}</p>)}
-              {hookCount === 0 && <p className="text-[10px] text-red-400">None</p>}
+              {filledHooks.map((h) => <p key={h.i} className="text-xs text-muted-foreground truncate">{h.text}</p>)}
+              {hookCount === 0 && <p className="text-xs text-red-400">None</p>}
             </div>
             <div className={cn("glass-card p-2.5", ctaCount === 0 && errors.length > 0 && "ring-1 ring-red-500/30")}>
               <div className="flex items-center gap-1.5 mb-1.5"><MousePointerClick className="h-3.5 w-3.5 text-brand-cyan" /><span className="font-semibold text-white text-xs">CTAs ({ctaCount})</span></div>
-              {filledCtas.map((c) => <p key={c.i} className="text-[10px] text-muted-foreground truncate">{c.text}</p>)}
-              {ctaCount === 0 && <p className="text-[10px] text-red-400">None</p>}
+              {filledCtas.map((c) => <p key={c.i} className="text-xs text-muted-foreground truncate">{c.text}</p>)}
+              {ctaCount === 0 && <p className="text-xs text-red-400">None</p>}
             </div>
             <div className={cn("glass-card p-2.5", subtitleCount === 0 && errors.length > 0 && "ring-1 ring-red-500/30")}>
               <div className="flex items-center gap-1.5 mb-1.5"><Subtitles className="h-3.5 w-3.5 text-brand-teal" /><span className="font-semibold text-white text-xs">Subtitles ({subtitleCount})</span></div>
-              {selectedStyles.map((s) => <p key={s.id} className="text-[10px] text-muted-foreground">{s.name}</p>)}
-              {subtitleCount === 0 && <p className="text-[10px] text-red-400">None</p>}
+              {selectedStyles.map((s) => <p key={s.id} className="text-xs text-muted-foreground">{s.name}</p>)}
+              {subtitleCount === 0 && <p className="text-xs text-red-400">None</p>}
             </div>
           </div>
 
@@ -197,7 +199,7 @@ export function StepReview() {
               <span className="text-xs text-muted-foreground flex items-center gap-1.5"><Coins className="h-3.5 w-3.5" />Credits</span>
               <span className="font-semibold text-white text-sm">{creditCost}</span>
             </div>
-            {creditCost > balance && <p className="text-[11px] text-red-400 mb-2">Insufficient credits ({balance} available).</p>}
+            {creditCost > balance && <p className="text-xs text-red-400 mb-2">Insufficient credits ({balance} available).</p>}
 
             {creating ? (
               <div className="space-y-2.5">
@@ -206,7 +208,7 @@ export function StepReview() {
                   <span className="font-mono text-brand-purple font-semibold">{genProgress}%</span>
                 </div>
                 <Progress value={genProgress} className="h-2.5" />
-                <p className="text-[10px] text-muted-foreground text-center">Generating {totalVideos} videos...</p>
+                <p className="text-xs text-muted-foreground text-center">Generating {totalVideos} videos...</p>
               </div>
             ) : (
               <Button onClick={handleCreate} className="w-full gradient-bg text-white border-0 hover:opacity-90 gap-2 h-10 text-sm cursor-pointer">
@@ -217,7 +219,7 @@ export function StepReview() {
         </div>
 
         {/* RIGHT — Phone Preview + Horizontal Combination Slider */}
-        <div className="flex-1 min-w-0 lg:pl-4 mt-4 lg:mt-0">
+        <div className="w-full lg:flex-1 min-w-0 mt-4 lg:mt-0">
           <div className="rounded-xl border border-border bg-card/50 p-3 space-y-3">
             {/* Phone Preview with autoplay video */}
             <PhonePreview screenColor="black">
@@ -248,6 +250,16 @@ export function StepReview() {
                         ...(hookBoxColor !== "transparent" && { backgroundColor: hookBoxColor, padding: "3px 6px", borderRadius: 4 }),
                       }}>{active.hook}</p>
                     </div>
+                    {/* Hook Body */}
+                    {hookBodyText && (
+                      <div className="absolute left-0 right-0 px-3 z-10" style={{ top: `${wizardState.styling.hookBodyYPosition}%`, transform: "translateY(-50%)", textAlign: wizardState.styling.hookBodyXPosition }}>
+                        <p className="leading-tight inline-block max-w-full break-words" style={{
+                          color: hookColor, fontFamily: hookFont, fontSize: `${Math.min(hookFontSize * 0.4, 14)}px`,
+                          fontWeight: hookBold ? 700 : 400,
+                          textShadow: "1px 1px 4px rgba(0,0,0,0.9)",
+                        }}>{hookBodyText}</p>
+                      </div>
+                    )}
                     {/* Subtitle */}
                     {previewSub && (
                       <div className="absolute left-0 right-0 px-3 z-10" style={{ top: `${wizardState.styling.subtitleYPosition}%`, transform: "translateY(-50%)", textAlign: wizardState.styling.subtitleXPosition }}>
@@ -283,7 +295,7 @@ export function StepReview() {
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-semibold text-white uppercase tracking-wider">Combinations</h3>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-[10px]">{combinations.length}</Badge>
+                <Badge variant="outline" className="text-xs">{combinations.length}</Badge>
                 {combinations.length > 0 && (
                   <div className="flex items-center gap-1">
                     <button
@@ -307,7 +319,7 @@ export function StepReview() {
             {combinations.length === 0 ? (
               <div className="text-center py-6">
                 <Video className="h-6 w-6 text-muted-foreground mx-auto mb-1.5" />
-                <p className="text-[11px] text-muted-foreground">Complete all steps to see combinations</p>
+                <p className="text-xs text-muted-foreground">Complete all steps to see combinations</p>
               </div>
             ) : (
               <div ref={scrollRef} className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
@@ -327,9 +339,9 @@ export function StepReview() {
                       {combo.thumbUrl ? <img src={combo.thumbUrl} alt="" className="w-full h-full object-cover" /> : <Play className="h-4 w-4 text-muted-foreground absolute inset-0 m-auto" />}
                     </div>
                     {/* Info */}
-                    <p className="text-[9px] font-medium text-white truncate">{combo.hook}</p>
-                    <p className="text-[8px] text-brand-cyan truncate">{combo.cta}</p>
-                    <p className="text-[8px] text-muted-foreground truncate">{combo.styleName}</p>
+                    <p className="text-[11px] font-medium text-white truncate">{combo.hook}</p>
+                    <p className="text-[10px] text-brand-cyan truncate">{combo.cta}</p>
+                    <p className="text-[10px] text-muted-foreground truncate">{combo.styleName}</p>
                   </button>
                 ))}
               </div>
