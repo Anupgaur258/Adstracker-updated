@@ -5,6 +5,7 @@ import { useHydration } from "@/hooks/use-hydration";
 import { StepIndicator } from "./step-indicator";
 import { StepVideos } from "./step-videos";
 import { StepHooks } from "./step-hooks";
+import { StepHookBodies } from "./step-hook-bodies";
 import { StepCtas } from "./step-ctas";
 import { StepSubtitles } from "./step-subtitles";
 import { StepReview } from "./step-review";
@@ -14,7 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import { LIMITS } from "@/lib/constants";
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 
 export function WizardShell() {
   const { wizardState, setWizardStep } = useProjectStore();
@@ -38,26 +39,25 @@ export function WizardShell() {
       }
       case 1: {
         const filled = wizardState.hooks.filter((h) => h.trim().length > 0).length;
-        if (filled < 1) errors.push("Please write at least 1 hook (min 1, max 5)");
+        if (filled < 1) errors.push("Please write at least 1 hook (Minimum 1, Maximum 5)");
         const hasTemplate = wizardState.hookTemplates.some((t) => t);
         if (!hasTemplate) errors.push("Please select a template for your hooks");
-        const { hookStart, hookDuration, hookBodyStart, hookBodyDuration } = wizardState.styling;
-        if (!hookDuration || hookDuration <= hookStart) errors.push("Please set hook start and end duration");
-        const hasBody = wizardState.hookBodies?.some((b) => b.trim().length > 0);
-        if (hasBody) {
-          if (!hookBodyDuration || hookBodyDuration <= hookBodyStart) errors.push("Please set hook body start and end duration");
-          if (hookBodyStart < hookDuration) errors.push("Hook body start must be after hook end duration");
-        }
         break;
       }
       case 2: {
+        const filledBodies = wizardState.hookBodies?.filter((b) => b.trim().length > 0).length || 0;
+        if (filledBodies < 1) errors.push("Please write at least 1 body");
+        if (filledBodies > 5) errors.push("Maximum 5 bodies allowed");
+        break;
+      }
+      case 3: {
         const filled = wizardState.ctas.filter((c) => c.trim().length > 0).length;
-        if (filled < 1) errors.push("Please write at least 1 CTA (min 1, max 3)");
+        if (filled < 1) errors.push("Please write at least 1 CTA (Minimum 1, Maximum 3)");
         const hasTemplate = wizardState.ctaTemplates.some((t) => t);
         if (!hasTemplate) errors.push("Please select a template for your CTAs");
         break;
       }
-      case 3: {
+      case 4: {
         if (wizardState.selectedSubtitleStyles.length === 0)
           errors.push("Please select at least 1 subtitle style");
         break;
@@ -90,9 +90,10 @@ export function WizardShell() {
     switch (currentStep) {
       case 0: return <StepVideos />;
       case 1: return <StepHooks />;
-      case 2: return <StepCtas />;
-      case 3: return <StepSubtitles />;
-      case 4: return <StepReview />;
+      case 2: return <StepHookBodies />;
+      case 3: return <StepCtas />;
+      case 4: return <StepSubtitles />;
+      case 5: return <StepReview />;
       default: return null;
     }
   };

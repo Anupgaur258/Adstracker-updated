@@ -47,19 +47,6 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-3 sm:gap-4">
-        {/* Dark/Light mode toggle */}
-        <button
-          onClick={toggleTheme}
-          className="h-8 w-8 rounded-full flex items-center justify-center border border-border bg-muted/50 hover:bg-muted transition-colors"
-          title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-        >
-          {theme === "dark" ? (
-            <Sun className="h-4 w-4 text-yellow-400" />
-          ) : (
-            <Moon className="h-4 w-4 text-brand-purple" />
-          )}
-        </button>
-
         {/* Credits badge - opens popup */}
         <CreditsPopup>
           <Badge variant="secondary" className="gap-1.5 bg-brand-purple/10 text-brand-purple border-brand-purple/20 hover:bg-brand-purple/15 cursor-pointer hidden sm:flex">

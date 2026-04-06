@@ -4,8 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
-import { CreditsPopup } from "./credits-popup";
-import { useCreditsStore } from "@/stores/credits-store";
+import { useAuthStore } from "@/stores/auth-store";
 import { useHydration } from "@/hooks/use-hydration";
 import {
   LayoutDashboard,
@@ -13,7 +12,7 @@ import {
   CreditCard,
   ChevronLeft,
   ChevronRight,
-  Coins,
+  Crown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -27,8 +26,9 @@ const navItems = [
 export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
-  const { balance } = useCreditsStore();
+  const { user } = useAuthStore();
   const hydrated = useHydration();
+  const planName = user?.plan || "free";
 
   return (
     <aside
@@ -37,30 +37,34 @@ export function Sidebar() {
         collapsed ? "w-[68px]" : "w-[240px]"
       )}
     >
+      {/* Header */}
       <div className={cn(
-        "flex items-center h-16",
-        collapsed ? "flex-col justify-center gap-1 py-2 px-1" : "justify-between p-4"
+        "flex items-center h-16 border-b border-border",
+        collapsed ? "flex-col justify-center gap-1 py-1 px-1" : "justify-between px-4"
       )}>
         <Logo iconOnly={collapsed} />
         <Button
           variant="ghost"
           size="icon"
-          className="h-7 w-7 text-muted-foreground hover:text-white shrink-0"
+          className={cn("text-muted-foreground hover:text-white shrink-0", collapsed ? "h-5 w-5" : "h-7 w-7")}
           onClick={() => setCollapsed(!collapsed)}
         >
-          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          {collapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-4 w-4" />}
         </Button>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      {/* Nav */}
+      <nav className={cn("flex-1 py-4 space-y-1", collapsed ? "px-2" : "px-3")}>
         {navItems.map((item) => {
-          const isActive = pathname.startsWith(item.href);
-          return (
+          const hrefPath = item.href.split("?")[0];
+          const isActive = pathname.startsWith(hrefPath);
+          const linkContent = (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                "flex items-center rounded-lg text-sm font-medium transition-colors",
+                collapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2.5",
                 isActive
                   ? "bg-brand-purple/10 text-brand-purple"
                   : "text-muted-foreground hover:bg-white/5 hover:text-white"
@@ -70,30 +74,27 @@ export function Sidebar() {
               {!collapsed && <span>{item.label}</span>}
             </Link>
           );
+
+          return <div key={item.href} title={collapsed ? item.label : undefined}>{linkContent}</div>;
         })}
       </nav>
 
-      <div className="p-3 border-t border-border mt-auto">
-        <CreditsPopup>
-          <div className="glass-card p-3 cursor-pointer hover:opacity-90 transition-opacity">
-            <div className="flex items-center gap-2">
-              <Coins className="h-4 w-4 text-brand-purple shrink-0" />
-              {!collapsed && (
-                <span className="text-xs text-muted-foreground">Credits</span>
-              )}
-            </div>
+      {/* Plan */}
+      <div className={cn("border-t border-border mt-auto", collapsed ? "p-2" : "p-3")}>
+        <div className={cn("glass-card", collapsed ? "p-2 flex flex-col items-center" : "p-3")}>
+          <div className={cn("flex items-center", collapsed ? "justify-center" : "gap-2")}>
+            <Crown className="h-4 w-4 text-brand-purple shrink-0" />
             {!collapsed && (
-              <p className="text-lg font-bold gradient-text mt-1">
-                {hydrated ? balance : "..."}
-              </p>
-            )}
-            {collapsed && (
-              <p className="text-xs font-bold gradient-text mt-1 text-center">
-                {hydrated ? balance : "..."}
-              </p>
+              <span className="text-xs text-muted-foreground">Active Plan</span>
             )}
           </div>
-        </CreditsPopup>
+          <p className={cn(
+            "font-bold gradient-text capitalize",
+            collapsed ? "text-[9px] mt-0.5 text-center" : "text-sm mt-1"
+          )}>
+            {hydrated ? (collapsed ? planName : `${planName} Plan`) : "..."}
+          </p>
+        </div>
       </div>
     </aside>
   );

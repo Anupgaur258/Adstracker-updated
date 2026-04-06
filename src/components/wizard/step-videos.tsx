@@ -123,7 +123,7 @@ export function StepVideos() {
       <div className="w-full">
         <div className="flex items-center gap-2 mb-2">
           <FolderOpen className="h-5 w-5 text-brand-purple" />
-          <h2 className="text-lg sm:text-xl font-bold text-white">Project Name <span className="text-red-400">*</span></h2>
+          <h2 className="text-lg sm:text-xl font-bold text-black">Project Name <span className="text-red-400">*</span></h2>
         </div>
         <div className="relative">
           <Input
@@ -141,10 +141,10 @@ export function StepVideos() {
 
       {/* Video section header */}
       <div>
-        <h2 className="text-lg sm:text-xl font-bold text-white">Select Videos <span className="text-red-400">*</span></h2>
+        <h2 className="text-lg sm:text-xl font-bold text-black">Select Videos <span className="text-red-400">*</span></h2>
         <p className="text-sm text-muted-foreground mt-1">
           Upload your own or choose demo videos.{" "}
-          <span className="text-brand-purple font-medium">{videos.length}/{LIMITS.maxVideos} selected</span>
+          <span className="text-black font-medium">{videos.length}/{LIMITS.maxVideos} selected</span>
         </p>
         {videoError && <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1"><AlertCircle className="h-3 w-3 shrink-0" />{videoError}</p>}
       </div>
@@ -169,7 +169,7 @@ export function StepVideos() {
       {videos.length > 0 && (
         <div>
           <h3 className="text-sm font-medium text-white mb-3">Your Videos</h3>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 px-1">
             {videos.map((video, index) => (
               <motion.div key={video.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.03 }}
                 className="glass-card relative group">
@@ -195,7 +195,7 @@ export function StepVideos() {
       {/* Demo videos */}
       <div>
         <h3 className="text-sm font-medium text-white mb-3">Or use demo videos</h3>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 px-1">
           {demoVideos.slice(0, 5).map((demo, index) => {
             const isSelected = videos.some((v) => v.id === demo.id);
             return (
@@ -210,8 +210,9 @@ export function StepVideos() {
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors z-[3] pointer-events-none" />
                   <Play className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 sm:h-8 sm:w-8 text-white/60 z-[4] group-hover:opacity-0 transition-opacity pointer-events-none" />
                   {isSelected && (
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-1.5 right-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full gradient-bg flex items-center justify-center z-[5] pointer-events-none">
-                      <Check className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-white" />
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-1.5 right-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center z-[5] pointer-events-none gradient-bg group-hover:bg-red-500">
+                      <Check className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-white group-hover:hidden" />
+                      <X className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-white hidden group-hover:block" />
                     </motion.div>
                   )}
                 </div>

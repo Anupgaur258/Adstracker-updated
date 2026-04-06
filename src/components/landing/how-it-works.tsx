@@ -26,11 +26,11 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-24 relative">
+    <section id="how-it-works" className="py-16 md:py-24 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-purple/[0.02] to-transparent" />
       <div className="max-w-7xl mx-auto px-4 md:px-6 relative">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
+        <div className="text-center mb-10 md:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black">
             How It <span className="gradient-text">Works</span>
           </h2>
           <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
@@ -54,7 +54,7 @@ export function HowItWorks() {
                   {step.step}
                 </span>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">{step.title}</h3>
+              <h3 className="text-lg font-semibold text-black mb-2">{step.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
                 {step.description}
               </p>

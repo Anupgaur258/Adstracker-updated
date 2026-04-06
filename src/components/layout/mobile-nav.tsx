@@ -5,12 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
-import { CreditsPopup } from "./credits-popup";
-import { useCreditsStore } from "@/stores/credits-store";
+import { useAuthStore } from "@/stores/auth-store";
 import { useHydration } from "@/hooks/use-hydration";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, LayoutDashboard, FolderPlus, CreditCard, Coins } from "lucide-react";
+import { Menu, LayoutDashboard, FolderPlus, CreditCard, Crown } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -21,8 +20,9 @@ const navItems = [
 export function MobileNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const { balance } = useCreditsStore();
+  const { user } = useAuthStore();
   const hydrated = useHydration();
+  const planName = user?.plan || "free";
 
   return (
     <div className="md:hidden">
@@ -36,7 +36,8 @@ export function MobileNav() {
           </div>
           <nav className="flex-1 px-3 py-4 space-y-1">
             {navItems.map((item) => {
-              const isActive = pathname.startsWith(item.href);
+              const hrefPath = item.href.split("?")[0];
+              const isActive = pathname.startsWith(hrefPath);
               return (
                 <Link
                   key={item.href}
@@ -56,17 +57,15 @@ export function MobileNav() {
             })}
           </nav>
           <div className="p-3 border-t border-border mt-auto">
-            <CreditsPopup>
-              <div className="glass-card p-3 cursor-pointer hover:opacity-90 transition-opacity">
-                <div className="flex items-center gap-2">
-                  <Coins className="h-4 w-4 text-brand-purple shrink-0" />
-                  <span className="text-xs text-muted-foreground">Credits</span>
-                </div>
-                <p className="text-lg font-bold gradient-text mt-1">
-                  {hydrated ? balance : "..."}
-                </p>
+            <div className="glass-card p-3">
+              <div className="flex items-center gap-2">
+                <Crown className="h-4 w-4 text-brand-purple shrink-0" />
+                <span className="text-xs text-muted-foreground">Active Plan</span>
               </div>
-            </CreditsPopup>
+              <p className="text-sm font-bold gradient-text mt-1 capitalize">
+                {hydrated ? `${planName} Plan` : "..."}
+              </p>
+            </div>
           </div>
         </SheetContent>
       </Sheet>

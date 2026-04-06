@@ -34,8 +34,20 @@ export function VideoPlayerModal({ video, project, open, onClose }: Props) {
   const hookFont = project.hookFonts?.[video.hookIndex] || "Inter";
   const hookFontSize = project.hookFontSizes?.[video.hookIndex] || 28;
   const hookBoxColor = project.hookBoxColors?.[video.hookIndex] || "transparent";
+  const hookBold = project.hookBolds?.[video.hookIndex] || false;
+  const hookOutlineColor = project.hookOutlineColors?.[video.hookIndex] || "transparent";
+  const hookOutlineWidth = project.hookOutlineWidths?.[video.hookIndex] || 0;
+  const hookBodyText = project.hookBodies?.[video.hookIndex]?.trim() || "";
+  const hookBodyColor = project.hookBodyColors?.[video.hookIndex] || "#FFF";
+  const hookBodyFont = project.hookBodyFonts?.[video.hookIndex] || "Inter";
+  const hookBodyFontSize = project.hookBodyFontSizes?.[video.hookIndex] || 22;
+  const hookBodyBold = project.hookBodyBolds?.[video.hookIndex] || false;
+  const hookBodyBoxColor = project.hookBodyBoxColors?.[video.hookIndex] || "transparent";
   const ctaColor = project.ctaColors?.[video.ctaIndex] || "#FFF";
   const ctaFont = project.ctaFonts?.[video.ctaIndex] || "Inter";
+  const ctaFontSize = project.ctaFontSizes?.[video.ctaIndex] || 20;
+  const ctaBold = project.ctaBolds?.[video.ctaIndex] || false;
+  const ctaBoxColor = project.ctaBoxColors?.[video.ctaIndex] || "transparent";
   const ctaTmpl = ctaTemplates.find((t) => t.id === project.ctaTemplates?.[video.ctaIndex]);
   const ctaStyleFn = ctaPreviewStyle[ctaTmpl?.style || "solid"] || ctaPreviewStyle.solid;
   const sub = subtitleStyles.find((s) => s.id === video.subtitleStyleId);
@@ -43,11 +55,11 @@ export function VideoPlayerModal({ video, project, open, onClose }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent className="p-0 border-0 bg-transparent shadow-none max-w-sm sm:max-w-md overflow-hidden">
+      <DialogContent className="p-0 border-0 bg-transparent shadow-none max-w-[calc(100vw-2rem)] sm:max-w-sm md:max-w-md overflow-visible mx-auto" showCloseButton={false}>
         <DialogTitle className="sr-only">Video Preview</DialogTitle>
         {/* Close button */}
-        <button onClick={onClose} className="absolute top-2 right-2 z-50 w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center text-white cursor-pointer transition-colors">
-          <X className="h-4 w-4" />
+        <button onClick={onClose} className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 z-[100] w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white shadow-lg hover:bg-gray-100 flex items-center justify-center text-black cursor-pointer transition-colors border border-gray-200">
+          <X className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
 
         {/* Video container - 9:16 aspect */}
@@ -74,13 +86,27 @@ export function VideoPlayerModal({ video, project, open, onClose }: Props) {
           {/* Overlays */}
           <div className="absolute inset-0 pointer-events-none">
             {/* Hook */}
-            <div className="absolute left-0 right-0 px-4" style={{ top: `${styling.hookYPosition}%`, transform: "translateY(-50%)", textAlign: styling.hookXPosition }}>
-              <p className="font-semibold leading-tight inline-block max-w-full break-words" style={{
+            <div className="absolute left-0 right-0 px-4" style={{ top: `${project.hookYPositions?.[video.hookIndex] ?? styling.hookYPosition}%`, transform: "translateY(-50%)", textAlign: (project.hookXPositions?.[video.hookIndex] || styling.hookXPosition) as React.CSSProperties["textAlign"] }}>
+              <p className="font-semibold leading-tight max-w-full break-words" style={{
                 color: hookColor, fontFamily: hookFont, fontSize: `${Math.min(hookFontSize * 0.7, 24)}px`,
+                fontWeight: hookBold ? 800 : 600,
                 textShadow: "1px 2px 8px rgba(0,0,0,0.9)",
                 ...(hookBoxColor !== "transparent" && { backgroundColor: hookBoxColor, padding: "4px 10px", borderRadius: 6 }),
+                ...(hookOutlineColor !== "transparent" && hookOutlineWidth > 0 && { WebkitTextStroke: `${hookOutlineWidth * 0.5}px ${hookOutlineColor}` }),
               }}>{hookText}</p>
             </div>
+
+            {/* Hook Body */}
+            {hookBodyText && (
+              <div className="absolute left-0 right-0 px-4" style={{ top: `${project.hookBodyYPositions?.[video.hookIndex] ?? styling.hookBodyYPosition}%`, transform: "translateY(-50%)", textAlign: (project.hookBodyXPositions?.[video.hookIndex] || styling.hookBodyXPosition) as React.CSSProperties["textAlign"] }}>
+                <p className="leading-tight max-w-full break-words" style={{
+                  color: hookBodyColor, fontFamily: hookBodyFont, fontSize: `${Math.min(hookBodyFontSize * 0.7, 22)}px`,
+                  fontWeight: hookBodyBold ? 800 : 400,
+                  textShadow: "1px 1px 6px rgba(0,0,0,0.9)",
+                  ...(hookBodyBoxColor !== "transparent" && { backgroundColor: hookBodyBoxColor, padding: "4px 10px", borderRadius: 6 }),
+                }}>{hookBodyText}</p>
+              </div>
+            )}
 
             {/* Subtitle */}
             {sub && (
@@ -95,8 +121,12 @@ export function VideoPlayerModal({ video, project, open, onClose }: Props) {
             )}
 
             {/* CTA */}
-            <div className="absolute left-0 right-0 px-4" style={{ top: `${styling.ctaYPosition}%`, transform: "translateY(-50%)", textAlign: styling.ctaXPosition }}>
-              <span className="inline-block px-4 py-2 font-semibold" style={{ ...ctaStyleFn(ctaColor), fontFamily: ctaFont, fontSize: "14px" }}>{ctaText}</span>
+            <div className="absolute left-0 right-0 px-4" style={{ top: `${project.ctaYPositions?.[video.ctaIndex] ?? styling.ctaYPosition}%`, transform: "translateY(-50%)", textAlign: (project.ctaXPositions?.[video.ctaIndex] || styling.ctaXPosition) as React.CSSProperties["textAlign"] }}>
+              <span className="inline-block px-4 py-2 font-semibold" style={{
+                ...ctaStyleFn(ctaColor), fontFamily: ctaFont, fontSize: `${Math.min(ctaFontSize * 0.7, 18)}px`,
+                fontWeight: ctaBold ? 800 : 600,
+                ...(ctaBoxColor !== "transparent" && { background: ctaBoxColor, borderRadius: 6 }),
+              }}>{ctaText}</span>
             </div>
           </div>
 

@@ -59,13 +59,13 @@ function getIDB(): StateStorage {
 
 const defaultStyling: ProjectStyling = {
   hookStart: 0,
-  hookDuration: 0,
+  hookDuration: 5,
   hookBodyStart: 0,
-  hookBodyDuration: 0,
+  hookBodyDuration: 5,
   hookBodyXPosition: "center",
   hookBodyYPosition: 30,
   ctaStart: 0,
-  ctaDuration: 0,
+  ctaDuration: 5,
   fontSize: 26,
   fontFamily: "Inter",
   textColor: "#FFFFFF",
@@ -117,6 +117,18 @@ const defaultWizardState: WizardState = {
   hookBodyBoxColors: ["transparent"],
   hookBodyOutlineColors: ["transparent"],
   hookBodyOutlineWidths: [0],
+  hookStarts: [0],
+  hookEnds: [5],
+  hookXPositions: ["center"],
+  hookYPositions: [8],
+  hookBodyStarts: [0],
+  hookBodyEnds: [5],
+  hookBodyXPositions: ["center"],
+  hookBodyYPositions: [30],
+  ctaStarts: [0],
+  ctaEnds: [5],
+  ctaXPositions: ["center"],
+  ctaYPositions: [88],
 };
 
 interface ProjectState {
@@ -164,10 +176,12 @@ export const useProjectStore = create<ProjectState>()(
         const state = get();
         const w = state.wizardState;
         const filledHooks = w.hooks.filter((h) => h.trim());
+        const filledBodies = w.hookBodies.filter((b) => b.trim());
         const filledCtas = w.ctas.filter((c) => c.trim());
         const totalVideos =
           w.videos.length *
           filledHooks.length *
+          Math.max(filledBodies.length, 1) *
           filledCtas.length *
           w.selectedSubtitleStyles.length;
         const id = `proj-${Date.now()}`;
@@ -203,15 +217,27 @@ export const useProjectStore = create<ProjectState>()(
           ctaOutlineWidths: w.ctaOutlineWidths.slice(0, filledCtas.length),
           hookBolds: w.hookBolds.slice(0, filledHooks.length),
           ctaBolds: w.ctaBolds.slice(0, filledCtas.length),
-          hookBodies: w.hookBodies.slice(0, filledHooks.length),
-          hookBodyTemplates: w.hookBodyTemplates.slice(0, filledHooks.length),
-          hookBodyColors: w.hookBodyColors.slice(0, filledHooks.length),
-          hookBodyFonts: w.hookBodyFonts.slice(0, filledHooks.length),
-          hookBodyFontSizes: w.hookBodyFontSizes.slice(0, filledHooks.length),
-          hookBodyBolds: w.hookBodyBolds.slice(0, filledHooks.length),
-          hookBodyBoxColors: w.hookBodyBoxColors.slice(0, filledHooks.length),
-          hookBodyOutlineColors: w.hookBodyOutlineColors.slice(0, filledHooks.length),
-          hookBodyOutlineWidths: w.hookBodyOutlineWidths.slice(0, filledHooks.length),
+          hookBodies: w.hookBodies.slice(0, Math.max(filledBodies.length, w.hookBodies.length)),
+          hookBodyTemplates: w.hookBodyTemplates.slice(0, w.hookBodies.length),
+          hookBodyColors: w.hookBodyColors.slice(0, w.hookBodies.length),
+          hookBodyFonts: w.hookBodyFonts.slice(0, w.hookBodies.length),
+          hookBodyFontSizes: w.hookBodyFontSizes.slice(0, w.hookBodies.length),
+          hookBodyBolds: w.hookBodyBolds.slice(0, w.hookBodies.length),
+          hookBodyBoxColors: w.hookBodyBoxColors.slice(0, w.hookBodies.length),
+          hookBodyOutlineColors: w.hookBodyOutlineColors.slice(0, w.hookBodies.length),
+          hookBodyOutlineWidths: w.hookBodyOutlineWidths.slice(0, w.hookBodies.length),
+          hookStarts: w.hookStarts.slice(0, filledHooks.length),
+          hookEnds: w.hookEnds.slice(0, filledHooks.length),
+          hookXPositions: w.hookXPositions.slice(0, filledHooks.length),
+          hookYPositions: w.hookYPositions.slice(0, filledHooks.length),
+          hookBodyStarts: w.hookBodyStarts.slice(0, w.hookBodies.length),
+          hookBodyEnds: w.hookBodyEnds.slice(0, w.hookBodies.length),
+          hookBodyXPositions: w.hookBodyXPositions.slice(0, w.hookBodies.length),
+          hookBodyYPositions: w.hookBodyYPositions.slice(0, w.hookBodies.length),
+          ctaStarts: w.ctaStarts.slice(0, filledCtas.length),
+          ctaEnds: w.ctaEnds.slice(0, filledCtas.length),
+          ctaXPositions: w.ctaXPositions.slice(0, filledCtas.length),
+          ctaYPositions: w.ctaYPositions.slice(0, filledCtas.length),
           generatedVideos: [],
           totalVideos,
           completedVideos: 0,
@@ -238,10 +264,10 @@ export const useProjectStore = create<ProjectState>()(
     }),
     {
       name: "adstacker-projects",
-      version: 15,
+      version: 17,
       storage: createJSONStorage(() => getIDB()),
       migrate: (persisted: unknown, version: number) => {
-        if (version < 15) {
+        if (version < 17) {
           return {
             projects: demoProjects,
             wizardState: defaultWizardState,

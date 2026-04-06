@@ -30,38 +30,46 @@ export default function ProjectDetailPage() {
   const hydrated = useHydration();
   const getProject = useProjectStore((s) => s.getProject);
   const updateProject = useProjectStore((s) => s.updateProject);
-  const [filters, setFilters] = useState<FilterState>({ videoId: null, hookIndex: null, ctaIndex: null, subtitleStyleId: null });
+  const [filters, setFilters] = useState<FilterState>({ videoId: null, hookIndex: null, bodyIndex: null, ctaIndex: null, subtitleStyleId: null });
   const [previewVideo, setPreviewVideo] = useState<GeneratedVideo | null>(null);
 
   const project = hydrated ? getProject(params.id as string) : undefined;
 
   // Generate video combinations if they don't exist
   useEffect(() => {
-    if (!project || project.generatedVideos.length > 0) return;
+    if (!project) return;
     if (project.status === "draft" || project.status === "pending") return;
+    // Regenerate if count doesn't match (e.g. bodies were added after initial generation)
+    const bodies = (project.hookBodies || []).filter((b) => b.trim());
+    const expectedCount = project.videos.length * project.hooks.length * Math.max(bodies.length, 1) * project.ctas.length * project.subtitleStyles.length;
+    if (project.generatedVideos.length === expectedCount) return;
 
     const videos: GeneratedVideo[] = [];
     let videoIndex = 0;
+    const bodyList = bodies.length > 0 ? bodies : [""];
 
     for (const video of project.videos) {
       for (let hi = 0; hi < project.hooks.length; hi++) {
-        for (let ci = 0; ci < project.ctas.length; ci++) {
-          for (const sid of project.subtitleStyles) {
-            const styleName = subtitleStyles.find((s) => s.id === sid)?.name ?? sid;
-            const isCompleted = videoIndex < project.completedVideos;
-            videos.push({
-              id: `gv-${project.id}-${videoIndex}`,
-              projectId: project.id,
-              videoSourceId: video.id,
-              hookIndex: hi,
-              ctaIndex: ci,
-              subtitleStyleId: sid,
-              status: isCompleted ? "completed" : project.status === "generating" ? "processing" : "pending",
-              label: `${video.name} + Hook ${hi + 1} + ${project.ctas[ci]} + ${styleName}`,
-              thumbnail: video.thumbnail,
-              outputUrl: video.url,
-            });
-            videoIndex++;
+        for (let bi = 0; bi < bodyList.length; bi++) {
+          for (let ci = 0; ci < project.ctas.length; ci++) {
+            for (const sid of project.subtitleStyles) {
+              const styleName = subtitleStyles.find((s) => s.id === sid)?.name ?? sid;
+              const bodyLabel = bodyList[bi] ? ` + Body ${bi + 1}` : "";
+              const isCompleted = videoIndex < project.completedVideos;
+              videos.push({
+                id: `gv-${project.id}-${videoIndex}`,
+                projectId: project.id,
+                videoSourceId: video.id,
+                hookIndex: hi,
+                ctaIndex: ci,
+                subtitleStyleId: sid,
+                status: isCompleted ? "completed" : project.status === "generating" ? "processing" : "pending",
+                label: `${video.name} + Hook ${hi + 1}${bodyLabel} + ${project.ctas[ci]} + ${styleName}`,
+                thumbnail: video.thumbnail,
+                outputUrl: video.url,
+              });
+              videoIndex++;
+            }
           }
         }
       }
@@ -151,11 +159,11 @@ export default function ProjectDetailPage() {
       {/* Videos */}
       {hasCompletedVideos ? (
         <>
-          <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <ProjectFilters project={project} filters={filters} onFilterChange={setFilters} />
-            <p className="text-xs text-muted-foreground">Showing {filteredVideos.length} of {project.generatedVideos.length}</p>
+            <p className="text-xs text-muted-foreground shrink-0">Showing {filteredVideos.length} of {project.generatedVideos.length}</p>
           </div>
-          <VideoGrid videos={filteredVideos} sourceVideos={project.videos} onPreview={(v) => setPreviewVideo(v)} />
+          <VideoGrid videos={filteredVideos} sourceVideos={project.videos} project={project} onPreview={(v) => setPreviewVideo(v)} />
         </>
       ) : (
         <>

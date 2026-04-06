@@ -14,7 +14,7 @@ export const pricingPlans: PricingPlan[] = [
       "Basic hook templates",
       "Watermarked exports",
     ],
-    cta: "Get Started",
+    cta: "Start Free Trial",
   },
   {
     id: "pro",

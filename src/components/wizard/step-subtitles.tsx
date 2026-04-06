@@ -40,17 +40,17 @@ export function StepSubtitles() {
   return (
     <div className="space-y-4 w-full">
       <div>
-        <h2 className="text-lg sm:text-xl font-bold text-white">Choose Subtitle Styles</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-black">Choose Subtitle Styles</h2>
         <p className="text-sm text-muted-foreground mt-1">
           Select at least 1 style (up to {LIMITS.maxSubtitleStyles}).{" "}
-          <span className="text-brand-purple font-medium">{selected.length}/{LIMITS.maxSubtitleStyles}</span>
+          <span className="text-black font-medium">{selected.length}/{LIMITS.maxSubtitleStyles}</span>
         </p>
       </div>
 
       <div className="flex flex-col lg:flex-row lg:items-stretch lg:gap-5 w-full">
         {/* LEFT — Subtitle cards */}
         <div className="w-full lg:w-[38%] lg:flex-none min-w-0 px-1">
-          <Label className="text-sm font-bold text-white mb-3 block">Choose Style <span className="text-red-400">*</span></Label>
+          <Label className="text-sm font-bold text-black mb-3 block">Choose Style <span className="text-red-400">*</span></Label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {subtitleStyles.map((style, index) => {
               const isSelected = selected.includes(style.id);

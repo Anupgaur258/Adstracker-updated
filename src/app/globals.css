@@ -149,9 +149,13 @@ html.light {
   html.light span { color: inherit; }
   html.light label { color: #374151; }
 
-  /* Override text-white everywhere */
+  /* Override text-white in app (not marketing) */
   html.light .text-white { color: #111827 !important; }
   html.light .text-muted-foreground { color: #6b7280 !important; }
+
+  /* Marketing pages — let inline styles and classes control colors */
+  html.light .marketing-dark .text-white { color: #ffffff !important; }
+  html.light .marketing-dark .text-muted-foreground { color: #9ca3af !important; }
 
   /* Glass cards */
   html.light .glass-card,

@@ -32,7 +32,7 @@ export function ResetPasswordForm() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="glass-card p-8 gradient-border"
+      className="glass-card p-5 sm:p-8 gradient-border"
     >
       <AnimatePresence mode="wait">
         {!sent ? (

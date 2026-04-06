@@ -142,7 +142,7 @@ export function ColorPickerAlpha({
         )}
       </div>
       <div className="flex items-center gap-2">
-        <span className="text-xs font-semibold text-white w-10 shrink-0">
+        <span className="text-xs font-semibold text-black w-10 shrink-0">
           Alpha
         </span>
         <div className="flex-1 relative">

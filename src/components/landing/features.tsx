@@ -36,10 +36,10 @@ const features = [
 
 export function Features() {
   return (
-    <section id="features" className="py-24 relative">
+    <section id="features" className="py-16 md:py-24 relative">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
+        <div className="text-center mb-10 md:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black">
             Everything You Need to{" "}
             <span className="gradient-text">Scale Creative</span>
           </h2>
@@ -61,7 +61,7 @@ export function Features() {
               <div className={`w-12 h-12 rounded-xl ${feature.bg} flex items-center justify-center mb-4`}>
                 <feature.icon className={`h-6 w-6 ${feature.color}`} />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
+              <h3 className="text-lg font-semibold text-black mb-2">{feature.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
             </motion.div>
           ))}

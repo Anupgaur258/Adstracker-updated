@@ -53,12 +53,7 @@ export function PlanCard({ plan, index = 0 }: { plan: PricingPlan; index?: numbe
 
       <Button
         render={<Link href="/signup" />}
-        className={cn(
-          "w-full",
-          plan.popular
-            ? "gradient-bg text-white border-0 hover:opacity-90"
-            : "bg-white/5 border-white/10 hover:bg-white/10"
-        )}
+        className="w-full gradient-bg text-white border-0 hover:opacity-90 font-semibold"
       >
         {plan.cta}
       </Button>

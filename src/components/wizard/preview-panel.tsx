@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import { useProjectStore } from "@/stores/project-store";
 import { hookTemplates } from "@/data/hook-templates";
 import { ctaTemplates } from "@/data/cta-templates";
@@ -29,67 +29,29 @@ const animClass: Record<string, string> = {
 interface PreviewPanelProps {
   activeLayer?: "hook" | "cta" | "subtitle" | "all";
   hookIndex?: number;
+  bodyIndex?: number;
   ctaIndex?: number;
   topContent?: React.ReactNode;
   hookStyleTarget?: "hook" | "body";
   children?: React.ReactNode;
 }
 
-export function PreviewPanel({ activeLayer = "all", hookIndex, ctaIndex, topContent, hookStyleTarget = "hook", children }: PreviewPanelProps) {
+export function PreviewPanel({ activeLayer = "all", hookIndex, bodyIndex, ctaIndex, topContent, hookStyleTarget = "hook", children }: PreviewPanelProps) {
   const { wizardState } = useProjectStore();
 
-  const hookStart = wizardState.styling.hookStart;
-  const hookEnd = wizardState.styling.hookDuration;
-  const bodyStart = wizardState.styling.hookBodyStart;
-  const bodyEnd = wizardState.styling.hookBodyDuration;
-  const hIdxTimer = hookIndex ?? 0;
-  const bodyText = wizardState.hookBodies?.[hIdxTimer]?.trim() || "";
-
-  const hookHasDuration = hookEnd > hookStart && hookEnd > 0;
-  const bodyHasDuration = bodyEnd > bodyStart && bodyEnd > 0;
-
-  const [timerHook, setTimerHook] = useState(false);
-  const [timerBody, setTimerBody] = useState(false);
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  // When durations are set, auto-play the sequence in a loop
-  useEffect(() => {
-    timersRef.current.forEach(clearTimeout);
-    timersRef.current = [];
-
-    if (!hookHasDuration) {
-      setTimerHook(false);
-      setTimerBody(false);
-      return;
-    }
-
-    const totalDuration = Math.max(hookEnd, bodyHasDuration && bodyText ? bodyEnd : hookEnd) + 1;
-
-    const runCycle = () => {
-      setTimerHook(false);
-      setTimerBody(false);
-
-      timersRef.current.push(setTimeout(() => setTimerHook(true), hookStart * 1000));
-      timersRef.current.push(setTimeout(() => setTimerHook(false), hookEnd * 1000));
-
-      if (bodyText && bodyHasDuration) {
-        timersRef.current.push(setTimeout(() => setTimerBody(true), bodyStart * 1000));
-        timersRef.current.push(setTimeout(() => setTimerBody(false), bodyEnd * 1000));
-      }
-
-      timersRef.current.push(setTimeout(runCycle, totalDuration * 1000));
-    };
-
-    runCycle();
-    return () => { timersRef.current.forEach(clearTimeout); };
-  }, [hookStart, hookEnd, bodyStart, bodyEnd, bodyText, hIdxTimer, hookHasDuration, bodyHasDuration]);
-
-  // When durations are set, use timers (sequenced). Otherwise, show based on which tab user selected.
-  const showHookText = hookHasDuration ? timerHook : (hookStyleTarget === "hook");
-  const showHookBody = hookHasDuration ? (bodyHasDuration && bodyText ? timerBody : false) : (hookStyleTarget === "body" && !!bodyText);
-
+  // Hook index
   const filledHooks = wizardState.hooks.map((h, i) => ({ text: h.trim(), i })).filter((x) => x.text);
   const hIdx = hookIndex ?? (filledHooks[0]?.i ?? 0);
+
+  // Body index — separate from hook index
+  const bIdx = bodyIndex ?? hIdx;
+  const bodyText = wizardState.hookBodies?.[bIdx]?.trim() || "";
+
+  // Show logic
+  const showHookText = activeLayer === "all" || activeLayer === "cta" || activeLayer === "subtitle" ? true : (hookStyleTarget === "hook");
+  const showHookBody = activeLayer === "all" || activeLayer === "cta" || activeLayer === "subtitle" ? !!bodyText : (hookStyleTarget === "body" && !!bodyText);
+
+  // Hook styles
   const hookText = wizardState.hooks[hIdx]?.trim() || "Hook Text";
   const hookColor = wizardState.hookColors[hIdx] || "#FFFFFF";
   const hookFont = wizardState.hookFonts[hIdx] || "Inter";
@@ -98,16 +60,18 @@ export function PreviewPanel({ activeLayer = "all", hookIndex, ctaIndex, topCont
   const hookOutlineColor = wizardState.hookOutlineColors[hIdx] || "transparent";
   const hookOutlineWidth = wizardState.hookOutlineWidths[hIdx] || 0;
   const hookBold = wizardState.hookBolds?.[hIdx] || false;
-  const hookBody = wizardState.hookBodies?.[hIdx]?.trim() || "";
-  const hookBodyColor = wizardState.hookBodyColors?.[hIdx] || "#FFFFFF";
-  const hookBodyFont = wizardState.hookBodyFonts?.[hIdx] || "Inter";
-  const hookBodyFontSize = wizardState.hookBodyFontSizes?.[hIdx] || 22;
-  const hookBodyBold = wizardState.hookBodyBolds?.[hIdx] || false;
-  const hookBodyBoxColor = wizardState.hookBodyBoxColors?.[hIdx] || "transparent";
-  const hookBodyOutlineColor = wizardState.hookBodyOutlineColors?.[hIdx] || "transparent";
-  const hookBodyOutlineWidth = wizardState.hookBodyOutlineWidths?.[hIdx] || 0;
   const hookTmpl = hookTemplates.find((t) => t.id === wizardState.hookTemplates[hIdx]) || hookTemplates[0];
-  const hookBodyTmpl = hookTemplates.find((t) => t.id === wizardState.hookBodyTemplates?.[hIdx]) || hookTemplates[0];
+
+  // Body styles — use bIdx
+  const hookBody = wizardState.hookBodies?.[bIdx]?.trim() || "";
+  const hookBodyColor = wizardState.hookBodyColors?.[bIdx] || "#FFFFFF";
+  const hookBodyFont = wizardState.hookBodyFonts?.[bIdx] || "Inter";
+  const hookBodyFontSize = wizardState.hookBodyFontSizes?.[bIdx] || 22;
+  const hookBodyBold = wizardState.hookBodyBolds?.[bIdx] || false;
+  const hookBodyBoxColor = wizardState.hookBodyBoxColors?.[bIdx] || "transparent";
+  const hookBodyOutlineColor = wizardState.hookBodyOutlineColors?.[bIdx] || "transparent";
+  const hookBodyOutlineWidth = wizardState.hookBodyOutlineWidths?.[bIdx] || 0;
+
 
   const filledCtas = wizardState.ctas.map((c, i) => ({ text: c.trim(), i })).filter((x) => x.text);
   const cIdx = ctaIndex ?? (filledCtas[0]?.i ?? 0);
@@ -133,31 +97,31 @@ export function PreviewPanel({ activeLayer = "all", hookIndex, ctaIndex, topCont
   const subOpacity = activeLayer === "all" || activeLayer === "subtitle" ? 1 : 0.4;
 
   return (
-    <div className="rounded-xl border border-border p-4 space-y-4 bg-card/50 w-full mt-[-70px] ">
+    <div className="rounded-xl border border-border p-3 sm:p-4 space-y-4 bg-card/50 w-full">
       {topContent}
       <PhonePreview screenColor="black">
         <div className="relative w-full h-full">
           {showHook && showHookText && (
-            <div className="absolute left-0 right-0 px-3" style={{ top: `${wizardState.styling.hookYPosition}%`, transform: "translateY(-50%)", textAlign: wizardState.styling.hookXPosition, opacity: hookOpacity }}>
-              <p className={cn("font-semibold leading-tight inline-block max-w-full break-words", activeLayer === "hook" && `overlay-anim-${hookTmpl.animation}`)} style={{ color: hookColor, fontFamily: hookFont, fontSize: `${Math.min(hookFontSize * 0.45, 16)}px`, fontWeight: hookBold ? 800 : 600, textShadow: "1px 1px 4px rgba(0,0,0,0.9)", ...(hookBoxColor !== "transparent" && { backgroundColor: hookBoxColor, padding: "4px 8px", borderRadius: 4 }), ...(hookOutlineColor !== "transparent" && hookOutlineWidth > 0 && { WebkitTextStroke: `${hookOutlineWidth * 0.5}px ${hookOutlineColor}` }) }}>{hookText}</p>
+            <div className="absolute left-0 right-0 px-3" style={{ top: `${wizardState.hookYPositions?.[hIdx] ?? 8}%`, transform: "translateY(-50%)", textAlign: (wizardState.hookXPositions?.[hIdx] || "center") as React.CSSProperties["textAlign"], opacity: hookOpacity }}>
+              <p className={cn("font-semibold leading-tight max-w-full break-words", activeLayer === "hook" && `overlay-anim-${hookTmpl.animation}`)} style={{ color: hookColor, fontFamily: hookFont, fontSize: `${Math.min(hookFontSize * 0.45, 16)}px`, fontWeight: hookBold ? 800 : 600, textShadow: "1px 1px 4px rgba(0,0,0,0.9)", ...(hookBoxColor !== "transparent" && { backgroundColor: hookBoxColor, padding: "4px 8px", borderRadius: 4 }), ...(hookOutlineColor !== "transparent" && hookOutlineWidth > 0 && { WebkitTextStroke: `${hookOutlineWidth * 0.5}px ${hookOutlineColor}` }) }}>{hookText}</p>
             </div>
           )}
 
           {showHookBody && hookBody && (
-            <div className="absolute left-0 right-0 px-3" style={{ top: `${wizardState.styling.hookBodyYPosition}%`, transform: "translateY(-50%)", textAlign: wizardState.styling.hookBodyXPosition, opacity: hookOpacity }}>
-              <p className={cn("leading-tight inline-block max-w-full break-words", activeLayer === "hook" && `overlay-anim-${hookBodyTmpl.animation}`)} style={{ color: hookBodyColor, fontFamily: hookBodyFont, fontSize: `${Math.min(hookBodyFontSize * 0.45, 16)}px`, fontWeight: hookBodyBold ? 800 : 400, textShadow: "1px 1px 3px rgba(0,0,0,0.8)", ...(hookBodyBoxColor !== "transparent" && { backgroundColor: hookBodyBoxColor, padding: "4px 8px", borderRadius: 4 }), ...(hookBodyOutlineColor !== "transparent" && hookBodyOutlineWidth > 0 && { WebkitTextStroke: `${hookBodyOutlineWidth * 0.5}px ${hookBodyOutlineColor}` }) }}>{hookBody}</p>
+            <div className="absolute left-0 right-0 px-3" style={{ top: `${wizardState.hookBodyYPositions?.[bIdx] ?? 30}%`, transform: "translateY(-50%)", textAlign: (wizardState.hookBodyXPositions?.[bIdx] || "center") as React.CSSProperties["textAlign"], opacity: hookOpacity }}>
+              <p className="leading-tight max-w-full break-words" style={{ color: hookBodyColor, fontFamily: hookBodyFont, fontSize: `${Math.min(hookBodyFontSize * 0.45, 16)}px`, fontWeight: hookBodyBold ? 800 : 400, textShadow: "1px 1px 3px rgba(0,0,0,0.8)", ...(hookBodyBoxColor !== "transparent" && { backgroundColor: hookBodyBoxColor, padding: "4px 8px", borderRadius: 4 }), ...(hookBodyOutlineColor !== "transparent" && hookBodyOutlineWidth > 0 && { WebkitTextStroke: `${hookBodyOutlineWidth * 0.5}px ${hookBodyOutlineColor}` }) }}>{hookBody}</p>
             </div>
           )}
 
           {showSub && (
             <div className="absolute left-0 right-0 px-3 transition-opacity" style={{ top: `${wizardState.styling.subtitleYPosition}%`, transform: "translateY(-50%)", textAlign: wizardState.styling.subtitleXPosition, opacity: subOpacity }}>
-              <p className={cn("leading-tight inline-block", activeLayer === "subtitle" && animClass[previewSubtitle!.animation])} style={{ fontFamily: previewSubtitle!.fontFamily, fontSize: "10px", color: previewSubtitle!.color, backgroundColor: previewSubtitle!.backgroundColor !== "transparent" ? previewSubtitle!.backgroundColor : undefined, padding: previewSubtitle!.backgroundColor !== "transparent" ? "2px 6px" : undefined, borderRadius: 3, textShadow: "1px 1px 2px rgba(0,0,0,0.8)" }}>{previewSubtitle!.preview}</p>
+              <p className={cn("leading-tight", activeLayer === "subtitle" && animClass[previewSubtitle!.animation])} style={{ fontFamily: previewSubtitle!.fontFamily, fontSize: "10px", color: previewSubtitle!.color, backgroundColor: previewSubtitle!.backgroundColor !== "transparent" ? previewSubtitle!.backgroundColor : undefined, padding: previewSubtitle!.backgroundColor !== "transparent" ? "2px 6px" : undefined, borderRadius: 3, textShadow: "1px 1px 2px rgba(0,0,0,0.8)" }}>{previewSubtitle!.preview}</p>
             </div>
           )}
 
           {showCta && (
-            <div className="absolute left-0 right-0 px-3 transition-opacity" style={{ top: `${wizardState.styling.ctaYPosition}%`, transform: "translateY(-50%)", textAlign: wizardState.styling.ctaXPosition, opacity: ctaOpacity }}>
-              <span className={cn("inline-block px-3 py-1 font-semibold", activeLayer === "cta" && `overlay-anim-${ctaTmpl.animation}`)} style={{ ...ctaStyleFn(ctaColor), fontFamily: ctaFont, fontSize: `${Math.min(ctaFontSize * 0.55, 13)}px`, fontWeight: ctaBold ? 800 : 600, ...(ctaBoxColor !== "transparent" && { backgroundColor: ctaBoxColor, borderRadius: 4 }), ...(ctaOutlineColor !== "transparent" && ctaOutlineWidth > 0 && { WebkitTextStroke: `${ctaOutlineWidth * 0.5}px ${ctaOutlineColor}` }) }}>{ctaText}</span>
+            <div className="absolute left-0 right-0 px-3 transition-opacity" style={{ top: `${wizardState.ctaYPositions?.[cIdx] ?? 88}%`, transform: "translateY(-50%)", textAlign: (wizardState.ctaXPositions?.[cIdx] || "center") as React.CSSProperties["textAlign"], opacity: ctaOpacity }}>
+              <span className={cn("px-3 py-1 font-semibold", activeLayer === "cta" && `overlay-anim-${ctaTmpl.animation}`)} style={{ ...ctaStyleFn(ctaColor), fontFamily: ctaFont, fontSize: `${Math.min(ctaFontSize * 0.55, 13)}px`, fontWeight: ctaBold ? 800 : 600, ...(ctaBoxColor !== "transparent" && { background: ctaBoxColor, borderRadius: 4 }), ...(ctaOutlineColor !== "transparent" && ctaOutlineWidth > 0 && { WebkitTextStroke: `${ctaOutlineWidth * 0.5}px ${ctaOutlineColor}` }) }}>{ctaText}</span>
             </div>
           )}
 

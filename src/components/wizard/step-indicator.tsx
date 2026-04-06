@@ -7,9 +7,10 @@ import { Check } from "lucide-react";
 const steps = [
   { label: "Videos", short: "1" },
   { label: "Hooks", short: "2" },
-  { label: "CTAs", short: "3" },
-  { label: "Subtitles", short: "4" },
-  { label: "Review", short: "5" },
+  { label: "Bodies", short: "3" },
+  { label: "CTAs", short: "4" },
+  { label: "Subtitles", short: "5" },
+  { label: "Review", short: "6" },
 ];
 
 export function StepIndicator({ currentStep }: { currentStep: number }) {
@@ -27,7 +28,7 @@ export function StepIndicator({ currentStep }: { currentStep: number }) {
                   className={cn(
                     "w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-300",
                     isCompleted && "gradient-bg text-white",
-                    isCurrent && "ring-2 ring-brand-purple bg-brand-purple/20 text-brand-purple",
+                    isCurrent && "ring-2 ring-brand-purple bg-brand-purple/20 text-black",
                     !isCompleted && !isCurrent && "bg-muted text-muted-foreground"
                   )}
                 >
@@ -42,7 +43,7 @@ export function StepIndicator({ currentStep }: { currentStep: number }) {
                 <span
                   className={cn(
                     "text-xs sm:text-sm whitespace-nowrap",
-                    isCurrent ? "text-white font-medium" : "text-muted-foreground"
+                    isCurrent ? "text-black font-medium" : "text-muted-foreground"
                   )}
                 >
                   <span className="hidden sm:inline">{step.label}</span>

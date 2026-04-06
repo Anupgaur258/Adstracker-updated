@@ -43,6 +43,18 @@ export interface Project {
   hookBodyBoxColors: string[];
   hookBodyOutlineColors: string[];
   hookBodyOutlineWidths: number[];
+  hookStarts: number[];
+  hookEnds: number[];
+  hookXPositions: string[];
+  hookYPositions: number[];
+  hookBodyStarts: number[];
+  hookBodyEnds: number[];
+  hookBodyXPositions: string[];
+  hookBodyYPositions: number[];
+  ctaStarts: number[];
+  ctaEnds: number[];
+  ctaXPositions: string[];
+  ctaYPositions: number[];
   generatedVideos: GeneratedVideo[];
   totalVideos: number;
   completedVideos: number;
@@ -194,6 +206,18 @@ export interface WizardState {
   hookBodyBoxColors: string[];
   hookBodyOutlineColors: string[];
   hookBodyOutlineWidths: number[];
+  hookStarts: number[];
+  hookEnds: number[];
+  hookXPositions: string[];
+  hookYPositions: number[];
+  hookBodyStarts: number[];
+  hookBodyEnds: number[];
+  hookBodyXPositions: string[];
+  hookBodyYPositions: number[];
+  ctaStarts: number[];
+  ctaEnds: number[];
+  ctaXPositions: string[];
+  ctaYPositions: number[];
 }
 
 export type GenerationStatus = "idle" | "generating" | "completed" | "failed";
