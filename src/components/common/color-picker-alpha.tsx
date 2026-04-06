@@ -133,7 +133,7 @@ export function ColorPickerAlpha({
               onChange("transparent");
             }}
             className={cn(
-              "h-8 text-xs bg-white/5 border-white/10 hover:bg-white/10 shrink-0 text-black dark:text-white",
+              "h-8 text-xs bg-white/5 border-white/10 hover:bg-white/10 shrink-0 text-white",
               isTransparent && "border-brand-purple"
             )}
           >
@@ -142,7 +142,7 @@ export function ColorPickerAlpha({
         )}
       </div>
       <div className="flex items-center gap-2">
-        <span className="text-xs font-semibold text-black dark:text-white w-10 shrink-0">
+        <span className="text-xs font-semibold text-white w-10 shrink-0">
           Alpha
         </span>
         <div className="flex-1 relative">
@@ -163,7 +163,7 @@ export function ColorPickerAlpha({
             className="py-1 relative"
           />
         </div>
-        <span className="text-xs font-semibold text-black dark:text-white font-mono w-10 text-right shrink-0">
+        <span className="text-xs font-semibold text-white font-mono w-10 text-right shrink-0">
           {Math.round(alpha * 100)}%
         </span>
       </div>

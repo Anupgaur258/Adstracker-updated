@@ -133,7 +133,7 @@ export function PreviewPanel({ activeLayer = "all", hookIndex, ctaIndex, topCont
   const subOpacity = activeLayer === "all" || activeLayer === "subtitle" ? 1 : 0.4;
 
   return (
-    <div className="rounded-xl border border-border p-4 space-y-4 bg-card/50 w-full mt-[-70px]">
+    <div className="rounded-xl border border-border p-4 space-y-4 bg-card/50 w-full mt-[-70px] ">
       {topContent}
       <PhonePreview screenColor="black">
         <div className="relative w-full h-full">

@@ -277,6 +277,24 @@ html.light {
 }
 
 @layer utilities {
+  /* Hook/CTA input fields — white in light, dark in dark */
+  .hook-input {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+  }
+  .hook-input::placeholder {
+    color: #6b7280;
+  }
+  html.light .hook-input {
+    background-color: #ffffff !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+  }
+  html.light .hook-input::placeholder {
+    color: #9ca3af !important;
+  }
+
   .glass-card {
     background: rgba(20, 24, 50, 0.6);
     backdrop-filter: blur(12px);

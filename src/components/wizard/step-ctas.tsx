@@ -231,14 +231,14 @@ export function StepCtas() {
               <div className="py-3 space-y-1.5">
                 <span className="text-sm font-bold text-white">Text Outline</span>
                 <ColorPickerAlpha value={activeOutlineColor} onChange={(c) => { updateCtaOutlineColor(c); if (c === "transparent") updateCtaOutlineWidth(0); else if (activeOutlineWidth === 0) updateCtaOutlineWidth(1); }} />
-                {activeOutlineColor !== "transparent" && (<><div className="flex items-center justify-between mt-1"><span className="text-sm font-bold text-white">Width</span><span className="text-xs text-black dark:text-white font-mono">{activeOutlineWidth}px</span></div><Slider value={[activeOutlineWidth]} onValueChange={(v) => updateCtaOutlineWidth(Array.isArray(v) ? v[0] : v)} min={1} max={5} step={0.5} className="py-1" /></>)}
+                {activeOutlineColor !== "transparent" && (<><div className="flex items-center justify-between mt-1"><span className="text-sm font-bold text-white">Width</span><span className="text-xs text-white font-mono">{activeOutlineWidth}px</span></div><Slider value={[activeOutlineWidth]} onValueChange={(v) => updateCtaOutlineWidth(Array.isArray(v) ? v[0] : v)} min={1} max={5} step={0.5} className="py-1" /></>)}
               </div>
               <div className="py-3 space-y-1.5">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold text-white">Font Size</span>
                   <div className="flex items-center gap-2">
                     <button onClick={() => updateCtaFontSize(Math.max(12, activeFontSize - 1))} className="w-7 h-7 rounded-md bg-white/5 border border-border flex items-center justify-center text-sm text-muted-foreground hover:bg-white/10 hover:text-white transition-colors">−</button>
-                    <span className="text-sm text-black dark:text-white font-mono w-10 text-center font-bold">{activeFontSize}px</span>
+                    <span className="text-sm text-white font-mono w-10 text-center font-bold">{activeFontSize}px</span>
                     <button onClick={() => updateCtaFontSize(Math.min(36, activeFontSize + 1))} className="w-7 h-7 rounded-md bg-white/5 border border-border flex items-center justify-center text-sm text-muted-foreground hover:bg-white/10 hover:text-white transition-colors">+</button>
                   </div>
                 </div>
@@ -273,7 +273,7 @@ export function StepCtas() {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between"><Label className="text-sm font-bold text-white flex items-center gap-1"><ArrowDownUp className="h-3.5 w-3.5" />Vertical</Label><span className="text-xs text-black dark:text-white font-mono">{wizardState.styling.ctaYPosition}%</span></div>
+                <div className="flex items-center justify-between"><Label className="text-sm font-bold text-white flex items-center gap-1"><ArrowDownUp className="h-3.5 w-3.5" />Vertical</Label><span className="text-xs text-white font-mono">{wizardState.styling.ctaYPosition}%</span></div>
                 <Slider value={[wizardState.styling.ctaYPosition]} onValueChange={(v) => updateWizardState({ styling: { ...wizardState.styling, ctaYPosition: Array.isArray(v) ? v[0] : v } })} min={0} max={100} step={1} className="py-1" />
               </div>
             </div>

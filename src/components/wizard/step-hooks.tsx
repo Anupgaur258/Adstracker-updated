@@ -211,7 +211,7 @@ export function StepHooks() {
                 <Type className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                 <Input value={hook} onChange={(e) => updateHook(index, e.target.value)} onFocus={() => { setActiveIndex(index); setStyleTarget("hook"); }}
                   placeholder={`Enter hook ${index + 1}...`} maxLength={LIMITS.hookMaxChars}
-                  className={cn("h-9 pl-9 pr-14 text-sm rounded-lg bg-white border-white/20 text-black placeholder:text-gray-400", validationErrors[index] && "border-red-500/50 ring-1 ring-red-500/20")} />
+                  className={cn("h-9 pl-9 pr-14 text-sm rounded-lg hook-input", validationErrors[index] && "border-red-500/50 ring-1 ring-red-500/20")} />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{hook.length}/{LIMITS.hookMaxChars}</span>
               </div>
               {validationErrors[index] && <p className="text-xs text-red-400 mt-1 flex items-center gap-1"><AlertCircle className="h-3 w-3" />{validationErrors[index]}</p>}
@@ -223,7 +223,7 @@ export function StepHooks() {
                   onFocus={() => { setActiveIndex(index); setStyleTarget("body"); }}
                   placeholder="Enter the main content or explanation of your video…"
                   rows={3}
-                  className={cn("text-sm rounded-lg resize-none bg-white border-white/20 text-black placeholder:text-gray-400", validationErrors[index] ? "border-red-500/50" : "")}
+                  className={cn("text-sm rounded-lg resize-none hook-input", validationErrors[index] ? "border-red-500/50" : "")}
                 />
               </div>
             </div>
@@ -292,14 +292,14 @@ export function StepHooks() {
               <div className="py-3 space-y-1.5">
                 <span className="text-sm font-bold text-white">Text Outline</span>
                 <ColorPickerAlpha value={activeOutlineColor} onChange={(c) => { setOutlineColor(c); if (c === "transparent") setOutlineWidth(0); else if (activeOutlineWidth === 0) setOutlineWidth(1); }} />
-                {activeOutlineColor !== "transparent" && (<><div className="flex items-center justify-between mt-1"><span className="text-sm font-bold text-white">Width</span><span className="text-xs text-black dark:text-white font-mono">{activeOutlineWidth}px</span></div><Slider value={[activeOutlineWidth]} onValueChange={(v) => setOutlineWidth(Array.isArray(v) ? v[0] : v)} min={1} max={5} step={0.5} className="py-1" /></>)}
+                {activeOutlineColor !== "transparent" && (<><div className="flex items-center justify-between mt-1"><span className="text-sm font-bold text-white">Width</span><span className="text-xs text-white font-mono">{activeOutlineWidth}px</span></div><Slider value={[activeOutlineWidth]} onValueChange={(v) => setOutlineWidth(Array.isArray(v) ? v[0] : v)} min={1} max={5} step={0.5} className="py-1" /></>)}
               </div>
               <div className="py-3 space-y-1.5">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold text-white">Font Size</span>
                   <div className="flex items-center gap-2">
                     <button onClick={() => setFontSize(Math.max(10, activeFontSize - 1))} className="w-7 h-7 rounded-md bg-white/5 border border-border flex items-center justify-center text-sm text-muted-foreground hover:bg-white/10 hover:text-white transition-colors">−</button>
-                    <span className="text-sm text-black dark:text-white font-mono w-10 text-center font-bold">{activeFontSize}px</span>
+                    <span className="text-sm text-white font-mono w-10 text-center font-bold">{activeFontSize}px</span>
                     <button onClick={() => setFontSize(Math.min(48, activeFontSize + 1))} className="w-7 h-7 rounded-md bg-white/5 border border-border flex items-center justify-center text-sm text-muted-foreground hover:bg-white/10 hover:text-white transition-colors">+</button>
                   </div>
                 </div>
@@ -334,7 +334,7 @@ export function StepHooks() {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between"><Label className="text-sm font-bold text-white flex items-center gap-1"><ArrowDownUp className="h-3.5 w-3.5" />Vertical</Label><span className="text-xs text-black dark:text-white font-mono">{wizardState.styling.hookYPosition}%</span></div>
+                <div className="flex items-center justify-between"><Label className="text-sm font-bold text-white flex items-center gap-1"><ArrowDownUp className="h-3.5 w-3.5" />Vertical</Label><span className="text-xs text-white font-mono">{wizardState.styling.hookYPosition}%</span></div>
                 <Slider value={[wizardState.styling.hookYPosition]} onValueChange={(v) => updateWizardState({ styling: { ...wizardState.styling, hookYPosition: Array.isArray(v) ? v[0] : v } })} min={0} max={100} step={1} className="py-1" />
               </div>
             </div>
@@ -369,7 +369,7 @@ export function StepHooks() {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between"><Label className="text-sm font-bold text-white flex items-center gap-1"><ArrowDownUp className="h-3.5 w-3.5" />Vertical</Label><span className="text-xs text-black dark:text-white font-mono">{wizardState.styling.hookBodyYPosition}%</span></div>
+                <div className="flex items-center justify-between"><Label className="text-sm font-bold text-white flex items-center gap-1"><ArrowDownUp className="h-3.5 w-3.5" />Vertical</Label><span className="text-xs text-white font-mono">{wizardState.styling.hookBodyYPosition}%</span></div>
                 <Slider value={[wizardState.styling.hookBodyYPosition]} onValueChange={(v) => updateWizardState({ styling: { ...wizardState.styling, hookBodyYPosition: Array.isArray(v) ? v[0] : v } })} min={0} max={100} step={1} className="py-1" />
               </div>
             </div>
