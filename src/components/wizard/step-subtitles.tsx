@@ -47,9 +47,9 @@ export function StepSubtitles() {
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row lg:items-stretch lg:gap-5 w-full">
+      <div className="flex flex-col md:flex-row md:items-stretch md:gap-4 lg:gap-5 w-full">
         {/* LEFT — Subtitle cards */}
-        <div className="w-full lg:w-[38%] lg:flex-none min-w-0 px-1">
+        <div className="w-full md:w-[45%] lg:w-[38%] md:flex-none min-w-0 px-1">
           <Label className="text-sm font-bold text-black mb-3 block">Choose Style <span className="text-red-400">*</span></Label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {subtitleStyles.map((style, index) => {
@@ -68,7 +68,7 @@ export function StepSubtitles() {
                   </div>
                   <div className="p-2.5">
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-semibold text-white text-sm">{style.name}</h3>
+                      <h3 className="font-semibold text-foreground text-sm">{style.name}</h3>
                       <Badge variant="outline" className="text-xs px-1.5 py-0">{style.font || style.fontFamily}</Badge>
                     </div>
                     {style.animationLabel && <Badge variant="outline" className="bg-brand-purple/10 border-brand-purple/20 text-brand-purple text-xs px-1.5 py-0">{style.animationLabel}</Badge>}
@@ -81,13 +81,13 @@ export function StepSubtitles() {
         </div>
 
         {/* DIVIDER LINE */}
-        <div className="hidden lg:flex items-stretch shrink-0 mx-0">
+        <div className="hidden md:flex items-stretch shrink-0 mx-0">
           <div className="w-px bg-border" />
         </div>
-        <div className="lg:hidden my-4 h-px bg-border" />
+        <div className="md:hidden my-4 h-px bg-border" />
 
         {/* RIGHT — Preview */}
-        <div className="w-full lg:flex-1 min-w-0 mt-4 lg:mt-0 space-y-4 lg:sticky lg:top-0 h-fit">
+        <div className="w-full md:flex-1 min-w-0 mt-4 md:mt-0 space-y-4 md:sticky md:top-0 h-fit">
           <PreviewPanel activeLayer="subtitle">
             {selected.length > 0 && (
               <div className="space-y-2">

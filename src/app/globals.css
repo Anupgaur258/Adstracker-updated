@@ -153,9 +153,8 @@ html.light {
   html.light .text-white { color: #111827 !important; }
   html.light .text-muted-foreground { color: #6b7280 !important; }
 
-  /* Marketing pages — let inline styles and classes control colors */
-  html.light .marketing-dark .text-white { color: #ffffff !important; }
-  html.light .marketing-dark .text-muted-foreground { color: #9ca3af !important; }
+  /* Marketing pages — muted foreground for light mode */
+  html.light .marketing-dark .text-muted-foreground { color: #6b7280 !important; }
 
   /* Glass cards */
   html.light .glass-card,

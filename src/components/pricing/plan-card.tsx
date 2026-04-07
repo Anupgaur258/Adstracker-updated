@@ -26,9 +26,9 @@ export function PlanCard({ plan, index = 0 }: { plan: PricingPlan; index?: numbe
       )}
 
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-white">{plan.name}</h3>
+        <h3 className="text-lg font-semibold text-foreground">{plan.name}</h3>
         <div className="mt-3 flex items-baseline gap-1">
-          <span className="text-4xl font-bold text-white">
+          <span className="text-4xl font-bold text-foreground">
             ${plan.price}
           </span>
           {plan.price > 0 && (

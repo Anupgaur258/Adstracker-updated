@@ -47,9 +47,9 @@ export function PreviewPanel({ activeLayer = "all", hookIndex, bodyIndex, ctaInd
   const bIdx = bodyIndex ?? hIdx;
   const bodyText = wizardState.hookBodies?.[bIdx]?.trim() || "";
 
-  // Show logic
-  const showHookText = activeLayer === "all" || activeLayer === "cta" || activeLayer === "subtitle" ? true : (hookStyleTarget === "hook");
-  const showHookBody = activeLayer === "all" || activeLayer === "cta" || activeLayer === "subtitle" ? !!bodyText : (hookStyleTarget === "body" && !!bodyText);
+  // Always show layers if content exists — opacity controls emphasis
+  const showHookText = true;
+  const showHookBody = !!bodyText;
 
   // Hook styles
   const hookText = wizardState.hooks[hIdx]?.trim() || "Hook Text";
@@ -92,23 +92,24 @@ export function PreviewPanel({ activeLayer = "all", hookIndex, bodyIndex, ctaInd
   const showCta = filledCtas.length > 0;
   const showSub = !!previewSubtitle;
 
-  const hookOpacity = activeLayer === "all" || activeLayer === "hook" ? 1 : 0.4;
+  const hookTextOpacity = activeLayer === "all" ? 1 : (activeLayer === "hook" && hookStyleTarget === "hook") ? 1 : 0.4;
+  const bodyTextOpacity = activeLayer === "all" ? 1 : (activeLayer === "hook" && hookStyleTarget === "body") ? 1 : 0.4;
   const ctaOpacity = activeLayer === "all" || activeLayer === "cta" ? 1 : 0.4;
   const subOpacity = activeLayer === "all" || activeLayer === "subtitle" ? 1 : 0.4;
 
   return (
-    <div className="rounded-xl border border-border p-3 sm:p-4 space-y-4 bg-card/50 w-full">
+    <div className="rounded-xl border border-border p-3 sm:p-4 space-y-3 sm:space-y-4 bg-card/50 w-full md:mt-[-40px] lg:mt-[-70px]">
       {topContent}
       <PhonePreview screenColor="black">
         <div className="relative w-full h-full">
           {showHook && showHookText && (
-            <div className="absolute left-0 right-0 px-3" style={{ top: `${wizardState.hookYPositions?.[hIdx] ?? 8}%`, transform: "translateY(-50%)", textAlign: (wizardState.hookXPositions?.[hIdx] || "center") as React.CSSProperties["textAlign"], opacity: hookOpacity }}>
+            <div className="absolute left-0 right-0 px-3" style={{ top: `${wizardState.hookYPositions?.[hIdx] ?? 8}%`, transform: "translateY(-50%)", textAlign: (wizardState.hookXPositions?.[hIdx] || "center") as React.CSSProperties["textAlign"], opacity: hookTextOpacity }}>
               <p className={cn("font-semibold leading-tight max-w-full break-words", activeLayer === "hook" && `overlay-anim-${hookTmpl.animation}`)} style={{ color: hookColor, fontFamily: hookFont, fontSize: `${Math.min(hookFontSize * 0.45, 16)}px`, fontWeight: hookBold ? 800 : 600, textShadow: "1px 1px 4px rgba(0,0,0,0.9)", ...(hookBoxColor !== "transparent" && { backgroundColor: hookBoxColor, padding: "4px 8px", borderRadius: 4 }), ...(hookOutlineColor !== "transparent" && hookOutlineWidth > 0 && { WebkitTextStroke: `${hookOutlineWidth * 0.5}px ${hookOutlineColor}` }) }}>{hookText}</p>
             </div>
           )}
 
           {showHookBody && hookBody && (
-            <div className="absolute left-0 right-0 px-3" style={{ top: `${wizardState.hookBodyYPositions?.[bIdx] ?? 30}%`, transform: "translateY(-50%)", textAlign: (wizardState.hookBodyXPositions?.[bIdx] || "center") as React.CSSProperties["textAlign"], opacity: hookOpacity }}>
+            <div className="absolute left-0 right-0 px-3" style={{ top: `${wizardState.hookBodyYPositions?.[bIdx] ?? 30}%`, transform: "translateY(-50%)", textAlign: (wizardState.hookBodyXPositions?.[bIdx] || "center") as React.CSSProperties["textAlign"], opacity: bodyTextOpacity }}>
               <p className="leading-tight max-w-full break-words" style={{ color: hookBodyColor, fontFamily: hookBodyFont, fontSize: `${Math.min(hookBodyFontSize * 0.45, 16)}px`, fontWeight: hookBodyBold ? 800 : 400, textShadow: "1px 1px 3px rgba(0,0,0,0.8)", ...(hookBodyBoxColor !== "transparent" && { backgroundColor: hookBodyBoxColor, padding: "4px 8px", borderRadius: 4 }), ...(hookBodyOutlineColor !== "transparent" && hookBodyOutlineWidth > 0 && { WebkitTextStroke: `${hookBodyOutlineWidth * 0.5}px ${hookBodyOutlineColor}` }) }}>{hookBody}</p>
             </div>
           )}

@@ -179,9 +179,9 @@ export function StepReview() {
         </div>
       )}
 
-      <div className="flex flex-col lg:flex-row lg:items-stretch lg:gap-5 w-full">
+      <div className="flex flex-col md:flex-row md:items-stretch md:gap-4 lg:gap-5 w-full">
         {/* LEFT */}
-        <div className="w-full lg:w-[38%] lg:flex-none min-w-0 space-y-3">
+        <div className="w-full md:w-[45%] lg:w-[38%] md:flex-none min-w-0 space-y-3">
           <div className={cn("glass-card p-3", !projectName.trim() && errors.length > 0 && "ring-1 ring-red-500/30")}>
             <p className="text-xs text-muted-foreground mb-0.5">Project Name</p>
             <p className="text-white font-semibold text-sm">{projectName || <span className="text-red-400">Not set</span>}</p>
@@ -247,7 +247,7 @@ export function StepReview() {
         </div>
 
         {/* RIGHT — Phone Preview + Horizontal Combination Slider */}
-        <div className="w-full lg:flex-1 min-w-0 mt-4 lg:mt-0">
+        <div className="w-full md:flex-1 min-w-0 mt-4 md:mt-0">
           <div className="rounded-xl border border-border bg-card/50 p-2 sm:p-3 space-y-3">
             {/* Phone Preview with autoplay video */}
             <PhonePreview screenColor="black">

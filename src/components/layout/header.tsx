@@ -49,9 +49,9 @@ export function Header() {
       <div className="flex items-center gap-3 sm:gap-4">
         {/* Credits badge - opens popup */}
         <CreditsPopup>
-          <Badge variant="secondary" className="gap-1.5 bg-brand-purple/10 text-brand-purple border-brand-purple/20 hover:bg-brand-purple/15 cursor-pointer hidden sm:flex">
-            <Coins className="h-3.5 w-3.5" />
-            {hydrated ? balance : "..."} credits
+          <Badge variant="secondary" className="gap-1 sm:gap-1.5 bg-brand-purple/10 text-brand-purple border-brand-purple/20 hover:bg-brand-purple/15 cursor-pointer text-xs sm:text-sm px-2 sm:px-2.5 py-0.5 sm:py-1">
+            <Coins className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            {hydrated ? balance : "..."}<span className="hidden sm:inline"> credits</span>
           </Badge>
         </CreditsPopup>
 

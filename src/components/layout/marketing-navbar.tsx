@@ -22,10 +22,10 @@ export function MarketingNavbar() {
           <Link href="/pricing" className="text-sm transition-colors" style={{ color: "#ffffff" }}>
             Pricing
           </Link>
-          <Link href="#features" className="text-sm transition-colors" style={{ color: "#ffffff" }}>
+          <Link href="/#features" className="text-sm transition-colors" style={{ color: "#ffffff" }}>
             Features
           </Link>
-          <Link href="#how-it-works" className="text-sm transition-colors" style={{ color: "#ffffff" }}>
+          <Link href="/#how-it-works" className="text-sm transition-colors" style={{ color: "#ffffff" }}>
             How It Works
           </Link>
         </div>
@@ -64,10 +64,10 @@ export function MarketingNavbar() {
           <Link href="/pricing" onClick={() => setMobileOpen(false)} className="block text-sm text-white py-2">
             Pricing
           </Link>
-          <Link href="#features" onClick={() => setMobileOpen(false)} className="block text-sm text-white py-2">
+          <Link href="/#features" onClick={() => setMobileOpen(false)} className="block text-sm text-white py-2">
             Features
           </Link>
-          <Link href="#how-it-works" onClick={() => setMobileOpen(false)} className="block text-sm text-white py-2">
+          <Link href="/#how-it-works" onClick={() => setMobileOpen(false)} className="block text-sm text-white py-2">
             How It Works
           </Link>
           <div className="pt-2 flex flex-col gap-2">

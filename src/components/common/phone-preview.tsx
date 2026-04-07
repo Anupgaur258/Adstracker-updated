@@ -12,7 +12,7 @@ export function PhonePreview({ children, className, screenColor = "black" }: Pho
   return (
     <div className={cn("flex flex-col items-center", className)}>
       {/* Phone frame */}
-      <div className="relative w-full max-w-[240px] sm:max-w-[280px] mx-auto">
+      <div className="relative w-full max-w-[220px] xs:max-w-[240px] sm:max-w-[260px] md:max-w-[240px] lg:max-w-[280px] mx-auto">
         {/* Outer frame */}
         <div className="rounded-[2rem] border-[3px] border-zinc-700 bg-zinc-900 p-1.5 shadow-2xl shadow-black/50">
           {/* Notch */}

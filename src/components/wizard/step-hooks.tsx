@@ -175,9 +175,9 @@ export function StepHooks() {
         </p>
       </div>
 
-      <div className="flex flex-col-reverse lg:flex-row lg:items-start lg:gap-5 w-full">
+      <div className="flex flex-col-reverse md:flex-row md:items-start md:gap-4 lg:gap-5 w-full">
         {/* LEFT — Hook inputs */}
-        <div className="w-full lg:w-[38%] lg:flex-none min-w-0 space-y-3 mt-3 lg:mt-0">
+        <div className="w-full md:w-[45%] lg:w-[38%] md:flex-none min-w-0 space-y-3 mt-3 md:mt-0">
           {hooks.map((hook, index) => (
             <div key={index} onClick={() => setActiveIndex(index)}
               className={cn("w-full text-left rounded-xl border p-3 transition-all cursor-pointer", activeIndex === index ? "border-brand-purple bg-brand-purple/5" : "border-border hover:border-border/80")}>
@@ -211,7 +211,7 @@ export function StepHooks() {
         </div>
 
         {/* RIGHT */}
-        <div className="w-full lg:flex-1 min-w-0 lg:sticky lg:top-0">
+        <div className="w-full md:flex-1 min-w-0 md:sticky md:top-0">
           <PreviewPanel activeLayer="hook" hookIndex={activeIndex} hookStyleTarget="hook"
             topContent={
               <div className="flex items-center justify-between bg-gradient-to-r from-brand-purple/10 to-transparent rounded-lg px-4 py-3">
